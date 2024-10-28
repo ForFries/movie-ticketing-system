@@ -21,9 +21,9 @@
         <module>api</module>
     </modules>
 
-	<com.forfries.properties>
+	<properties>
 		<java.version>17</java.version>
-	</com.forfries.properties>
+	</properties>
 
 	<dependencyManagement>
 		<dependencies>
@@ -41,7 +41,7 @@
 
 			<dependency>
 				<groupId>com.baomidou</groupId>
-				<artifactId>mybatis-plus-boot-starter</artifactId>
+				<artifactId>mybatis-plus-spring-boot3-starter</artifactId>
 				<version>3.5.9</version>
 			</dependency>
 
@@ -80,7 +80,11 @@
 				<version>8.0.30</version>
 			</dependency>
 
-
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>fastjson</artifactId>
+				<version>1.2.76</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 </project>
