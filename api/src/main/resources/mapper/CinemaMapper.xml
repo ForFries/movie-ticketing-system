@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.forfries.mapper.CinemaMapper">
+
+    <resultMap id="BaseResultMap" type="com.forfries.entity.Cinema">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <com.forfries.result property="name" column="name" jdbcType="VARCHAR"/>
+            <com.forfries.result property="status" column="status" jdbcType="VARCHAR"/>
+            <com.forfries.result property="address" column="address" jdbcType="VARCHAR"/>
+            <com.forfries.result property="phoneNumber" column="phone_number" jdbcType="VARCHAR"/>
+            <com.forfries.result property="introduction" column="introduction" jdbcType="VARCHAR"/>
+            <com.forfries.result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+            <com.forfries.result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,name,status,
+        address,phone_number,introduction,
+        created_at,updated_at
+    </sql>
+</mapper>
