@@ -1,5 +1,6 @@
 package com.forfries.controller.admin;
 
+import com.forfries.constant.RoleConstant;
 import com.forfries.result.Result;
 import com.forfries.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +19,9 @@ public class AdminUsersController {
 
     @PostMapping
     public Result allocateCinemaAdminAccount(@RequestParam String username,
-                                             @RequestParam String password){
+                                             @RequestParam String password,
+                                             @RequestParam Long cinemaId){
+        userService.register(username,password, RoleConstant.ROLE_CINEMA_ADMIN,cinemaId);
         return Result.success();
     }
 

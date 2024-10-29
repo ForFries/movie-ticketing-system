@@ -10,5 +10,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface UserService extends IService<User> {
 
-    String login(String username, String password);
+    String createToken(String username, String password);
+
+    User register(String username, String password,String role);
+
+    User register(String username, String password,String role,Long cinemaId);
 }

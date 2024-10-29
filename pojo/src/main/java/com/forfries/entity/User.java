@@ -3,6 +3,8 @@ package com.forfries.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -10,7 +12,9 @@ import lombok.Data;
  */
 @TableName(value ="user")
 @Data
+@Builder
 public class User implements Serializable {
+
     private Long id;
 
     private String username;

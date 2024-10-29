@@ -4,13 +4,16 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.forfries.constant.MessageConstant;
 import com.forfries.constant.RoleConstant;
+import com.forfries.constant.StatusConstant;
 import com.forfries.entity.User;
 import com.forfries.exception.AccountNotFoundException;
 import com.forfries.exception.PasswordErrorException;
+import com.forfries.exception.SystemException;
 import com.forfries.properties.JwtProperties;
 import com.forfries.service.UserService;
 import com.forfries.mapper.UserMapper;
 import com.forfries.utils.JwtUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +37,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     private JwtProperties jwtProperties;
 
     @Override
-    public String login(String username, String password) {
+    public String createToken(String username, String password) {
 
         // 使用 MyBatis-Plus 的条件构造器
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
@@ -63,6 +66,32 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         claims.put("cinemaId", user.getCinemaId());
 
         return JwtUtil.createJWT(secretKey,ttl,claims);
+    }
+
+    @Override
+    public User register(String username, String password, String role) {
+        return register(username, password, role, null);
+    }
+
+    @Override
+    public User register(String username, String password,String role,Long cinemaId) {
+        // 将 DTO 转换为 Entity
+        User user = User.builder()
+                    .username(username)
+                    .password(password)
+                    .role(role)
+                    .status(StatusConstant.NORMAL)
+                    .cinemaId(cinemaId)
+                    .build();
+
+        //TODO 对密码进行加密
+        //user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        // 保存到数据库
+        if(!this.save(user))
+            throw new SystemException(MessageConstant.SYSTEM_ERROR);
+
+        return user;
     }
 }
 
