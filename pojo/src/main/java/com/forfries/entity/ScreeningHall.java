@@ -17,7 +17,7 @@ public class ScreeningHall implements Serializable {
 
     private String name;
 
-    private Integer status;
+    private String status;
 
     private Integer maxCapacity;
 

@@ -10,4 +10,5 @@ public class MessageConstant {
     public static final String PASSWORD_ERROR = "密码错误";
     public static final String ACCOUNT_NOT_FOUND = "账号不存在";
     public static final String COULD_NOT_FIND = "无对应";
+    public static final String INCONSISTENT_ID = "ID不一致";
 }

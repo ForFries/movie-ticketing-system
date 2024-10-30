@@ -15,7 +15,7 @@ public class Movie implements Serializable {
 
     private String title;
 
-    private Integer status;
+    private String status;
 
     private String category;
 

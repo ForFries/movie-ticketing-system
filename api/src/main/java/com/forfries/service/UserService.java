@@ -1,7 +1,9 @@
 package com.forfries.service;
 
+import com.forfries.dto.CinemaPageDTO;
 import com.forfries.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.forfries.result.PageResult;
 
 /**
 * @author Nolan
@@ -11,6 +13,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface UserService extends IService<User> {
 
     String createToken(String username, String password);
+
 
     User register(String username, String password,String role);
 

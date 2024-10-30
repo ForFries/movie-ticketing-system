@@ -41,9 +41,12 @@
 
 			<dependency>
 				<groupId>com.baomidou</groupId>
-				<artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+				<artifactId>mybatis-plus-bom</artifactId>
 				<version>3.5.9</version>
+				<type>pom</type>
+				<scope>import</scope>
 			</dependency>
+
 
 			<dependency>
 				<groupId>com.auth0</groupId>
@@ -85,6 +88,7 @@
 				<artifactId>fastjson</artifactId>
 				<version>1.2.76</version>
 			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 </project>

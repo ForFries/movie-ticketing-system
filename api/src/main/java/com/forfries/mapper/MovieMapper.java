@@ -2,6 +2,7 @@ package com.forfries.mapper;
 
 import com.forfries.entity.Movie;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
 * @author Nolan
@@ -9,6 +10,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @createDate 2024-10-30 08:02:52
 * @Entity com.forfries.entity.Movie
 */
+@Mapper
 public interface MovieMapper extends BaseMapper<Movie> {
 
 }
