@@ -20,5 +20,9 @@ public class MessageConstant {
     public static final String SYSTEM_ERROR_ILLEGAL_ARGUMENT = "方法中没有含有id的参数";
     public static final String SYSTEM_ERROR_NO_MAPPER = "无法反射找到Mapper";
 
+    public static final String TIME_CONFLICT = "排片时间冲突！请检查！";
+    public static final String TIME_CONFLICT_TIME = "开始时间必须早于结束时间！";
+
+
 
 }

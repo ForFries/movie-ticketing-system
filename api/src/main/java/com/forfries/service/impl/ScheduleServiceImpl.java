@@ -3,16 +3,21 @@ package com.forfries.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 import com.forfries.common.service.Impl.PageableWithCheckServiceImpl;
+import com.forfries.constant.MessageConstant;
 import com.forfries.dto.SchedulePageDTO;
 
 import com.forfries.entity.Schedule;
 
+import com.forfries.exception.TimeConflictException;
 import com.forfries.mapper.ScheduleMapper;
 
 import com.forfries.service.ScheduleService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
 * @author Nolan
@@ -39,6 +44,44 @@ public class ScheduleServiceImpl extends PageableWithCheckServiceImpl<ScheduleMa
         queryWrapper.eq("cinema_id", schedulePageDTO.getCinemaId());
         // 可以添加更多的查询条件
         queryWrapper.orderByDesc("updated_at");
+    }
+
+    @Override
+    public boolean addWithoutConflict(Schedule schedule) {
+        if(checkTimeConflict(schedule)) {
+            throw new TimeConflictException(MessageConstant.TIME_CONFLICT);
+        }
+        return save(schedule);
+    }
+
+    @Override
+    public boolean updateByIdWithCheckWithoutConflict(Long id, Schedule schedule) {
+        if(checkTimeConflict(schedule)) {
+            throw new TimeConflictException(MessageConstant.TIME_CONFLICT);
+        }
+        return updateByIdWithCheck(id, schedule);
+    }
+
+    private boolean checkTimeConflict(Schedule newSchedule) {
+        LocalDateTime newStartTime = newSchedule.getStartTime();
+        LocalDateTime newEndTime = newSchedule.getEndTime();
+
+        if(newStartTime.isAfter(newEndTime)) {
+            throw new TimeConflictException(MessageConstant.TIME_CONFLICT_TIME);
+        }
+        QueryWrapper<Schedule> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("cinema_id", newSchedule.getCinemaId())
+                .eq("movie_id", newSchedule.getMovieId())
+                .eq("screening_hall_id", newSchedule.getScreeningHallId())
+                .and(wrapper -> wrapper.between("start_time", newStartTime, newEndTime)
+                        .or()
+                        .between("end_time", newStartTime, newEndTime)
+                        .or()
+                        .le("start_time", newStartTime).ge("end_time", newEndTime));
+
+        List<Schedule> conflictingSchedules = list(queryWrapper);
+
+        return !conflictingSchedules.isEmpty();
     }
 }
 

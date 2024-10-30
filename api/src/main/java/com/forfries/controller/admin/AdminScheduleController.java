@@ -39,7 +39,7 @@ public class AdminScheduleController {
         scheduleService.deleteByIdWithCheck(id);
         return Result.success();
     }
-
+    //TODO 时间不应该冲突
     @PostMapping
     public Result<?> addSchedule(@RequestParam Long cinemaId,
                                       @RequestBody Schedule schedule) {
@@ -47,7 +47,7 @@ public class AdminScheduleController {
         if(!schedule.getCinemaId().equals(cinemaId))
             throw new InconsistentIDException(MessageConstant.INCONSISTENT_CINEMA_ID);
 
-        scheduleService.save(schedule);
+        scheduleService.addWithoutConflict(schedule);
         return Result.success();
     }
 
@@ -61,7 +61,7 @@ public class AdminScheduleController {
         if(!schedule.getCinemaId().equals(cinemaId))
             throw new InconsistentIDException(MessageConstant.INCONSISTENT_CINEMA_ID);
 
-        scheduleService.updateByIdWithCheck(id,schedule);
+        scheduleService.updateByIdWithCheckWithoutConflict(id,schedule);
         return Result.success();
     }
 
