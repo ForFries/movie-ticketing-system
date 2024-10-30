@@ -41,15 +41,26 @@ public class AdminScreeningHallController {
     }
 
     @PostMapping
-    public Result<?> addScreeningHall(@RequestBody ScreeningHall screeningHall) {
+    public Result<?> addScreeningHall(@RequestParam Long cinemaId,
+                                      @RequestBody ScreeningHall screeningHall) {
+
+        if(!screeningHall.getCinemaId().equals(cinemaId))
+            throw new InconsistentIDException(MessageConstant.INCONSISTENT_CINEMA_ID);
+
         screeningHallService.save(screeningHall);
         return Result.success();
     }
 
     @PutMapping("/{id}")
-    public Result<?> updateScreeningHall(@PathVariable Long id,@RequestBody ScreeningHall screeningHall) {
+    public Result<?> updateScreeningHall(@PathVariable Long id,
+                                         @RequestParam Long cinemaId,
+                                         @RequestBody ScreeningHall screeningHall) {
         if(!screeningHall.getId().equals(id))
             throw new InconsistentIDException(MessageConstant.INCONSISTENT_ID);
+
+        if(!screeningHall.getCinemaId().equals(cinemaId))
+            throw new InconsistentIDException(MessageConstant.INCONSISTENT_CINEMA_ID);
+
         screeningHallService.updateByIdWithCheck(id,screeningHall);
         return Result.success();
     }

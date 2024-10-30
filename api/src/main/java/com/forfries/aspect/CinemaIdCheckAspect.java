@@ -4,6 +4,7 @@ package com.forfries.aspect;
 import com.auth0.jwt.interfaces.Claim;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.forfries.constant.MessageConstant;
 import com.forfries.constant.RoleConstant;
 import com.forfries.context.BaseContext;
@@ -30,7 +31,10 @@ import java.util.Map;
 public class CinemaIdCheckAspect {
 
     @Around("@annotation(com.forfries.annotation.CinemaIdCheck)")
-    public Object checkCinemaPermission(ProceedingJoinPoint joinPoint) throws SystemException, PermissionErrorException {
+    public Object checkCinemaPermission(ProceedingJoinPoint joinPoint) throws Throwable {
+
+        log.info("进入CinemaIdCheck_AOP");
+
         Map<String, Claim> currentClaims = BaseContext.getCurrentClaims();
         if(currentClaims.get("role").asString().equals(RoleConstant.ROLE_SYSTEM_ADMIN))
             return joinPoint.proceed();
@@ -60,7 +64,7 @@ public class CinemaIdCheckAspect {
         Object target = joinPoint.getTarget();
 
         // 获取 Mapper
-        BaseMapper<?> mapper = getMapper(target);
+        BaseMapper<Object> mapper = (BaseMapper<Object>) getMapper(target);
 
         // 检查权限
         if (!checkCinemaId(mapper, id, adminCinemaId)) {
@@ -81,8 +85,9 @@ public class CinemaIdCheckAspect {
     private BaseMapper<?> getMapper(Object target) throws SystemException {
         // 反射获取 Mapper
         try {
-            return (BaseMapper<?>) target.getClass().getSuperclass().getDeclaredField("baseMapper").get(target);
+            return ((IService<?>) target).getBaseMapper();
         } catch (Exception e) {
+            log.error("报错：{}",e.getMessage());
             throw new SystemException(MessageConstant.SYSTEM_ERROR_NO_MAPPER);
         }
     }
