@@ -11,7 +11,5 @@ import com.forfries.result.PageResult;
 * @description 针对表【movie】的数据库操作Service
 * @createDate 2024-10-30 08:02:53
 */
-public interface MovieService extends IService<Movie> {
-    PageResult page(MoviePageDTO moviePageDTO);
-
+public interface MovieService extends PageableService<Movie,MoviePageDTO> {
 }
