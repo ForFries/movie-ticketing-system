@@ -3,6 +3,7 @@ package com.forfries.controller.admin;
 
 
 import com.forfries.constant.MessageConstant;
+import com.forfries.constant.StatusConstant;
 import com.forfries.dto.ScreeningHallPageDTO;
 import com.forfries.entity.ScreeningHall;
 import com.forfries.exception.InconsistentIDException;
@@ -43,10 +44,11 @@ public class AdminScreeningHallController {
     @PostMapping
     public Result<?> addScreeningHall(@RequestParam Long cinemaId,
                                       @RequestBody ScreeningHall screeningHall) {
-
+        //TODO 这里存在一些问题，刚创建好的ScreeningHall的Status应该为无座位状态，后续再进行更改
         if(!screeningHall.getCinemaId().equals(cinemaId))
             throw new InconsistentIDException(MessageConstant.INCONSISTENT_CINEMA_ID);
 
+        screeningHall.setStatus(StatusConstant.SEAT_NOT_CREATED);
         screeningHallService.save(screeningHall);
         return Result.success();
     }

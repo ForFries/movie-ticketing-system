@@ -20,6 +20,8 @@ public class StatusConstant {
     //影院影厅状态
     //装修中
     public static final String DURING_RENOVATION = "4";
+    //座位未创建
+    public static final String SEAT_NOT_CREATED = "11";
 
     //座位状态
     //维修中
