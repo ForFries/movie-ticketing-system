@@ -24,7 +24,7 @@ import java.util.Map;
  */
 @Component
 @Slf4j
-public class JwtTokenAdminInterceptor implements HandlerInterceptor {
+public class JwtTokenCinemaAdminInterceptor implements HandlerInterceptor {
 
     @Autowired
     private JwtProperties jwtProperties;
@@ -54,7 +54,12 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
                     token);
             log.info("token : {}", payload);
             BaseContext.setCurrentClaims(payload);
-            if(!payload.get("role").asString().equals(RoleConstant.ROLE_SYSTEM_ADMIN))
+            if(payload.get("role").asString().equals(RoleConstant.ROLE_SYSTEM_ADMIN)){
+                return true;
+            }
+            //TODO 这里要把异常全部通过全局异常处理器
+            String cinemaId = request.getParameter("cinemaId");
+            if(!cinemaId.equals(payload.get("cinemaId").asString()))
                 throw new PermissionErrorException(MessageConstant.PERMISSION_ERROR);
             return true;
         }catch (Exception e)

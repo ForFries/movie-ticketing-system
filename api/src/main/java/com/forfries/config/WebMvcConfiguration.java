@@ -1,6 +1,7 @@
 package com.forfries.config;
 
 import com.forfries.interceptor.JwtTokenAdminInterceptor;
+import com.forfries.interceptor.JwtTokenCinemaAdminInterceptor;
 import com.forfries.json.JacksonObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +19,23 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
     @Autowired
     private JwtTokenAdminInterceptor jwtTokenAdminInterceptor;
 
+    @Autowired
+    private JwtTokenCinemaAdminInterceptor jwtTokenCinemaAdminInterceptor;
+
     protected void addInterceptors(InterceptorRegistry registry) {
         log.info("开始注册拦截器...拦截url:/api/admin/**");
         registry.addInterceptor(jwtTokenAdminInterceptor)
-                .addPathPatterns("/api/admin/**");
+                .addPathPatterns("/api/admin/movies/**")
+                .addPathPatterns("/api/admin/cinemas/**");
+
+
+        registry.addInterceptor(jwtTokenCinemaAdminInterceptor)
+                .addPathPatterns("/api/admin/**")
+                .excludePathPatterns("/api/admin/movies/**")
+                .excludePathPatterns("/api/admin/cinemas/**");
+
     }
+
     /**
      * 扩展Spring MVC框架的消息转化器
      * @param converters
