@@ -12,4 +12,5 @@ public class MessageConstant {
     public static final String COULD_NOT_FIND = "无对应";
     public static final String INCONSISTENT_ID = "ID不一致";
     public static final String PERMISSION_ERROR = "权限错误，请检查token是否具有该权限！";
+    public static final String JWT_ERROR = "JWT令牌解析错误，请检查token";
 }

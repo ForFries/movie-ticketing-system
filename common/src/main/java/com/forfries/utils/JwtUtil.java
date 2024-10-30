@@ -6,6 +6,8 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.forfries.constant.MessageConstant;
+import com.forfries.exception.JwtErrorException;
 
 import java.util.Date;
 import java.util.Map;
@@ -44,8 +46,12 @@ public class JwtUtil {
     public static Map<String, Claim> decodeJWT(String secretKey, String token) throws JWTVerificationException {
         Algorithm algorithm = Algorithm.HMAC256(secretKey);
         JWTVerifier verifier = JWT.require(algorithm).build(); // 验证签名
-        DecodedJWT decodedJWT = verifier.verify(token);
+        try {
+            DecodedJWT decodedJWT = verifier.verify(token);
+            return decodedJWT.getClaims();
+        }catch (Exception e) {
+            throw new JwtErrorException(MessageConstant.JWT_ERROR);
+        }
 
-        return decodedJWT.getClaims();
     }
 }

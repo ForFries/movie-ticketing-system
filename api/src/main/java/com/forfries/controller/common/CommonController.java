@@ -28,7 +28,7 @@ public class CommonController {
     }
 
     @PostMapping("/register")
-    public Result register(@RequestParam String username,
+    public Result<?> register(@RequestParam String username,
                            @RequestParam String password){
         userService.register(username,password, RoleConstant.ROLE_USER);
         return Result.success();

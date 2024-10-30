@@ -5,6 +5,7 @@ import com.auth0.jwt.interfaces.Claim;
 import com.forfries.constant.MessageConstant;
 import com.forfries.constant.RoleConstant;
 import com.forfries.context.BaseContext;
+import com.forfries.exception.JwtErrorException;
 import com.forfries.exception.PermissionErrorException;
 import com.forfries.properties.JwtProperties;
 import com.forfries.utils.JwtUtil;
@@ -24,7 +25,7 @@ import java.util.Map;
  */
 @Component
 @Slf4j
-public class JwtTokenAdminInterceptor implements HandlerInterceptor {
+public class JwtTokenSystemAdminInterceptor implements HandlerInterceptor {
 
     @Autowired
     private JwtProperties jwtProperties;
@@ -38,7 +39,7 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
      * @return
      * @throws Exception
      */
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws JwtErrorException, PermissionErrorException {
         //判断当前拦截到的是Controller的方法还是其他资源
         if (!(handler instanceof HandlerMethod)) {
             //当前拦截到的不是动态方法，直接放行
@@ -48,20 +49,15 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
         //1、从请求头中获取令牌
         String token = request.getHeader(jwtProperties.getAdminTokenName());
         log.info("token : {}", token);
-        try {
-            Map<String, Claim> payload = JwtUtil.decodeJWT(
-                    jwtProperties.getAdminSecretKey(),
-                    token);
-            log.info("token : {}", payload);
-            BaseContext.setCurrentClaims(payload);
-            if(!payload.get("role").asString().equals(RoleConstant.ROLE_SYSTEM_ADMIN))
-                throw new PermissionErrorException(MessageConstant.PERMISSION_ERROR);
-            return true;
-        }catch (Exception e)
-        {
-            response.setStatus(401);
-            return false;
-        }
+
+        Map<String, Claim> payload = JwtUtil.decodeJWT(
+                jwtProperties.getAdminSecretKey(),
+                token);
+        log.info("token : {}", payload);
+        BaseContext.setCurrentClaims(payload);
+        if(!payload.get("role").asString().equals(RoleConstant.ROLE_SYSTEM_ADMIN))
+            throw new PermissionErrorException(MessageConstant.PERMISSION_ERROR);
+        return true;
 
     }
 }
