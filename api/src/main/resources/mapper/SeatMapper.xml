@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.forfries.mapper.SeatMapper">
+
+    <resultMap id="BaseResultMap" type="com.forfries.entity.Seat">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="screeningHallId" column="screening_hall_id" jdbcType="BIGINT"/>
+            <result property="status" column="status" jdbcType="VARCHAR"/>
+            <result property="row" column="row" jdbcType="INTEGER"/>
+            <result property="col" column="col" jdbcType="INTEGER"/>
+            <result property="rowId" column="row_id" jdbcType="VARCHAR"/>
+            <result property="colId" column="col_id" jdbcType="VARCHAR"/>
+            <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+            <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,screening_hall_id,status,
+        row,col,row_id,
+        col_id,created_at,updated_at
+    </sql>
+</mapper>

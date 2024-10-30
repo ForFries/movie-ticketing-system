@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.forfries.mapper.TicketMapper">
+
+    <resultMap id="BaseResultMap" type="com.forfries.entity.Ticket">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="seatId" column="seat_id" jdbcType="BIGINT"/>
+            <result property="scheduleId" column="schedule_id" jdbcType="BIGINT"/>
+            <result property="orderId" column="order_id" jdbcType="BIGINT"/>
+            <result property="status" column="status" jdbcType="VARCHAR"/>
+            <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+            <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,seat_id,schedule_id,
+        order_id,status,created_at,
+        updated_at
+    </sql>
+</mapper>
