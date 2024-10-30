@@ -3,7 +3,6 @@ package com.forfries.service;
 import com.forfries.common.service.PageableWithCheckService;
 import com.forfries.dto.SchedulePageDTO;
 import com.forfries.entity.Schedule;
-import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
 * @author Nolan
@@ -12,4 +11,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface ScheduleService extends PageableWithCheckService<Schedule, SchedulePageDTO> {
 
+    boolean addWithoutConflict(Schedule schedule);
+
+    boolean updateByIdWithCheckWithoutConflict(Long id, Schedule schedule);
 }

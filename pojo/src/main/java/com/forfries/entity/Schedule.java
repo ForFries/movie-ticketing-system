@@ -25,9 +25,9 @@ public class Schedule implements Serializable {
 
     private Integer availableCapacity;
 
-    private String startTime;
+    private LocalDateTime startTime;
 
-    private String endTime;
+    private LocalDateTime endTime;
 
     private String ticketPrice;
 
