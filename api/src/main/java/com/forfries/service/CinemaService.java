@@ -1,9 +1,8 @@
 package com.forfries.service;
 
+import com.forfries.common.service.PageableService;
 import com.forfries.dto.CinemaPageDTO;
 import com.forfries.entity.Cinema;
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.forfries.result.PageResult;
 
 /**
 * @author Nolan

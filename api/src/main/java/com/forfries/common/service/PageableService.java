@@ -1,4 +1,4 @@
-package com.forfries.service;
+package com.forfries.common.service;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;

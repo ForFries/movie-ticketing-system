@@ -1,14 +1,9 @@
 package com.forfries.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.forfries.dto.CinemaPageDTO;
+import com.forfries.common.service.Impl.PageableServiceImpl;
 import com.forfries.dto.MoviePageDTO;
-import com.forfries.entity.Cinema;
 import com.forfries.entity.Movie;
-import com.forfries.result.PageResult;
 import com.forfries.service.MovieService;
 import com.forfries.mapper.MovieMapper;
 import org.springframework.beans.factory.annotation.Autowired;

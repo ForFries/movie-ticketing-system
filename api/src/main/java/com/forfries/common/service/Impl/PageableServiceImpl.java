@@ -1,16 +1,18 @@
-package com.forfries.service.impl;
+package com.forfries.common.service.Impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
-import com.baomidou.mybatisplus.extension.repository.CrudRepository;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.forfries.dto.PageDTO;
 import com.forfries.result.PageResult;
-import com.forfries.service.PageableService;
+import com.forfries.common.service.PageableService;
 
-public abstract class PageableServiceImpl<M extends BaseMapper<T>, T,D extends PageDTO> extends CrudRepository<M, T> implements PageableService<T,D> {
+public abstract class PageableServiceImpl<M extends BaseMapper<T>, T,D extends PageDTO>
+        extends ServiceImpl<M, T>
+        implements PageableService<T,D> {
 
     // 通用的分页查询方法
     public PageResult page(D pageDTO) {

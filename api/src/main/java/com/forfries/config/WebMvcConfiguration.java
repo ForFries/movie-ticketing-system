@@ -17,18 +17,18 @@ import java.util.List;
 @Slf4j
 public class WebMvcConfiguration extends WebMvcConfigurationSupport {
     @Autowired
-    private JwtTokenSystemAdminInterceptor jwtTokenAdminInterceptor;
+    private JwtTokenSystemAdminInterceptor jwtTokenSystemAdminInterceptor;
 
     @Autowired
     private JwtTokenCinemaAdminInterceptor jwtTokenCinemaAdminInterceptor;
 
     protected void addInterceptors(InterceptorRegistry registry) {
-        log.info("开始注册拦截器...拦截url:/api/admin/**");
-        registry.addInterceptor(jwtTokenAdminInterceptor)
+        log.info("开始注册系统管理员拦截器...");
+        registry.addInterceptor(jwtTokenSystemAdminInterceptor)
                 .addPathPatterns("/api/admin/movies/**")
                 .addPathPatterns("/api/admin/cinemas/**");
 
-
+        log.info("开始注册影院管理员拦截器...");
         registry.addInterceptor(jwtTokenCinemaAdminInterceptor)
                 .addPathPatterns("/api/admin/**")
                 .excludePathPatterns("/api/admin/movies/**")
