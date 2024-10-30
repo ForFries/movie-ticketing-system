@@ -72,6 +72,7 @@ public class SeatServiceImpl extends ServiceImpl<SeatMapper, Seat>
         updateScreeningHall.setId(screeningHallId);
         updateScreeningHall.setStatus(StatusConstant.NORMAL);
 
+
         screeningHallService.updateById(updateScreeningHall);
 
     }
