@@ -1,5 +1,6 @@
 package com.forfries.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.forfries.constant.StatusConstant;
 import com.forfries.dto.SeatCoordinate;
@@ -9,6 +10,8 @@ import com.forfries.entity.Seat;
 import com.forfries.service.ScreeningHallService;
 import com.forfries.service.SeatService;
 import com.forfries.mapper.SeatMapper;
+import com.forfries.vo.SeatVO;
+import com.jayway.jsonpath.internal.function.numeric.Max;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +34,7 @@ public class SeatServiceImpl extends ServiceImpl<SeatMapper, Seat>
     private ScreeningHallService screeningHallService;
 
     @Override
-    public void addSeats(SeatDTO seatDTO) {
+    public boolean addSeats(SeatDTO seatDTO) {
 
         long screeningHallId = seatDTO.getScreeningHallId();
 
@@ -75,7 +78,44 @@ public class SeatServiceImpl extends ServiceImpl<SeatMapper, Seat>
 
         screeningHallService.updateById(updateScreeningHall);
 
+        return true;
     }
+
+    public boolean deleteSeats(Long screeningHallId){
+
+        // 创建 QueryWrapper 并设置删除条件
+        QueryWrapper<Seat> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("screening_hall_id", screeningHallId);
+
+        // 执行删除操作
+        seatMapper.delete(queryWrapper);
+
+        return true;
+    }
+
+    @Override
+    public SeatVO getSeats(Long screeningHallId) {
+        QueryWrapper<Seat> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("screening_hall_id", screeningHallId);
+        //TODO 这里状态
+        queryWrapper.ne("status", StatusConstant.DISABLED);
+        List<Seat> seats = seatMapper.selectList(queryWrapper);
+        long colNum = 0;
+        long rowNum = 0;
+        for (Seat seat : seats) {
+            colNum = Math.max(colNum,seat.getCol());
+            rowNum = Math.max(rowNum,seat.getRow());
+        }
+        SeatVO seatVO = SeatVO.builder()
+                .screeningHallId(screeningHallId)
+                .colNum(colNum)
+                .rowNum(rowNum)
+                .seats(seats)
+                .build();
+
+        return seatVO;
+    }
+
 }
 
 

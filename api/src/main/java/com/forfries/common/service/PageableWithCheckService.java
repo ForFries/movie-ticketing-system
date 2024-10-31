@@ -6,5 +6,6 @@ public interface PageableWithCheckService<T,D extends PageDTO> extends PageableS
     T getByIdWithCheck(Long id);
     boolean deleteByIdWithCheck(Long id);
     boolean updateByIdWithCheck(Long id,T t);
+    boolean check(Long screeningHallId);
 }
 

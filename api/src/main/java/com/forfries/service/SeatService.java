@@ -3,6 +3,7 @@ package com.forfries.service;
 import com.forfries.dto.SeatDTO;
 import com.forfries.entity.Seat;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.forfries.vo.SeatVO;
 
 /**
 * @author Nolan
@@ -11,5 +12,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface SeatService extends IService<Seat> {
 
-    void addSeats(SeatDTO seatDTO);
+    boolean addSeats(SeatDTO seatDTO);
+    boolean deleteSeats(Long screeningHallId);
+
+    SeatVO getSeats(Long screeningHallId);
 }
