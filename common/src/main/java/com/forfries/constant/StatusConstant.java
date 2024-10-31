@@ -27,6 +27,13 @@ public class StatusConstant {
     //维修中
     public static final String IN_MAINTENANCE = "5";
 
+
+    //票状态（座位场次状态）
+    public static final String AVAILABLE = "13";
+
+    public static final String NOT_AVAILABLE = "14";
+
+
     //订单状态
     //未支付
     public static final String UNPAID = "6";
@@ -43,4 +50,6 @@ public class StatusConstant {
     //已退款
     public static final String REFUNDED = "10";
 
+    //已取消
+    public static final String CANCELED = "12";
 }

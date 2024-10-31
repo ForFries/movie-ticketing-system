@@ -8,6 +8,8 @@ import com.forfries.entity.TicketOrder;
 import com.forfries.entity.TicketOrder;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
 * @author Nolan
 * @description 针对表【ticket_order】的数据库操作Service
@@ -16,4 +18,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface TicketOrderService extends PageableService<TicketOrder, TicketOrderPageDTO> {
 
     boolean createTicketOrder(TicketOrderGenerationDTO ticketOrderGenerationDTO);
+
+    boolean checkSeatOccupied(List<Long> seatIds,Long scheduleId);
 }

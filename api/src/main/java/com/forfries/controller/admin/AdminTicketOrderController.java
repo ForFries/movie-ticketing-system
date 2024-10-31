@@ -43,8 +43,7 @@ public class AdminTicketOrderController {
     }
 
     @PostMapping
-    public Result<?> createTicketOrder(@RequestParam Long cinemaId,
-                                      @RequestBody TicketOrderGenerationDTO ticketOrderGenerationDTO) {
+    public Result<?> createTicketOrder(@RequestBody TicketOrderGenerationDTO ticketOrderGenerationDTO) {
 
         ticketOrderService.createTicketOrder(ticketOrderGenerationDTO);
         return Result.success();

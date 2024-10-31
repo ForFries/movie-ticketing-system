@@ -4,7 +4,7 @@ package com.forfries.constant;
  * 信息提示常量类
  */
 public class MessageConstant {
-
+//  public static final String
     public static final String SYSTEM_ERROR = "系统错误，请联系管理员";
 
     public static final String PASSWORD_ERROR = "密码错误";
@@ -28,5 +28,16 @@ public class MessageConstant {
 
     public static final String REPEAT_CREATION = "座位不能重复创建！";
 
+    public static final String STANDARDIZATION_ERROR = "请核查你的数据与API文档是否一致！";
+
+    public static final String SEAT_OCCUPIED = "座位已经被占领啦！请重新选座";
+    public static final String SEAT_IN_MAINTENANCE = "座位正在维修！请重新选座";
+//  public static final String
+//  public static final String
+//  public static final String
+//  public static final String
+//  public static final String
+//  public static final String
+//  public static final String
 
 }

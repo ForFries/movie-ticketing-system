@@ -7,6 +7,7 @@ import com.forfries.dto.SeatCoordinate;
 import com.forfries.dto.SeatDTO;
 import com.forfries.entity.ScreeningHall;
 import com.forfries.entity.Seat;
+import com.forfries.entity.Ticket;
 import com.forfries.service.ScreeningHallService;
 import com.forfries.service.SeatService;
 import com.forfries.mapper.SeatMapper;
@@ -126,6 +127,14 @@ public class SeatServiceImpl extends ServiceImpl<SeatMapper, Seat>
         updateById(seat);
 
         return true;
+    }
+
+    @Override
+    public boolean checkSeatStatus(List<Long> seatIds) {
+        QueryWrapper<Seat> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("id", seatIds)
+                .eq("status", StatusConstant.IN_MAINTENANCE);
+        return this.count(queryWrapper) > 0;
     }
 
 }

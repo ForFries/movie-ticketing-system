@@ -5,6 +5,8 @@ import com.forfries.entity.Seat;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.forfries.vo.SeatVO;
 
+import java.util.List;
+
 /**
 * @author Nolan
 * @description 针对表【seat】的数据库操作Service
@@ -18,4 +20,6 @@ public interface SeatService extends IService<Seat> {
     SeatVO getSeats(Long screeningHallId);
 
     boolean update(Long id, String status);
+
+    boolean checkSeatStatus(List<Long> seatIds);
 }
