@@ -21,7 +21,11 @@ public abstract class PageableServiceImpl<M extends BaseMapper<T>, T,D extends P
 
         Page<T> page = new Page<>(currentPage, pageSize);
         QueryWrapper<T> queryWrapper = new QueryWrapper<>();
-
+        String status = pageDTO.getStatus();
+        //这里加了对status的
+        if (status != null && !status.isEmpty()) {
+            queryWrapper.like("status", status);
+        }
         // 调用子类的方法来构建 QueryWrapper
         buildQueryWrapper(queryWrapper, pageDTO);
 

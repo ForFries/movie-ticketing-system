@@ -12,9 +12,9 @@
             <result property="status" column="status" jdbcType="VARCHAR"/>
             <result property="currentCapacity" column="current_capacity" jdbcType="INTEGER"/>
             <result property="availableCapacity" column="available_capacity" jdbcType="INTEGER"/>
-            <result property="startTime" column="start_time" jdbcType="VARCHAR"/>
-            <result property="endTime" column="end_time" jdbcType="VARCHAR"/>
-            <result property="ticketPrice" column="ticket_price" jdbcType="VARCHAR"/>
+            <result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
+            <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
+            <result property="ticketPrice" column="ticket_price" jdbcType="DECIMAL"/>
             <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
             <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>
     </resultMap>

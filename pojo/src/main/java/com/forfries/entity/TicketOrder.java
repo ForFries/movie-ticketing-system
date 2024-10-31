@@ -2,7 +2,11 @@ package com.forfries.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -10,6 +14,7 @@ import lombok.Data;
  */
 @TableName(value ="ticket_order")
 @Data
+@Builder
 public class TicketOrder implements Serializable {
     private Long id;
 
@@ -17,7 +22,8 @@ public class TicketOrder implements Serializable {
 
     private String orderNum;
 
-    private String totalPrice;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private BigDecimal totalPrice;
 
     private String status;
 

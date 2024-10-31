@@ -54,7 +54,7 @@ public class AdminSeatController {
     }
 
     @PostMapping("/{id}")
-    public Result<?> updateSeatStatus(@PathVariable Long id, @RequestBody String status) {
+    public Result<?> updateSeatStatus(@PathVariable Long id, @RequestParam String status) {
         //检查seatId对应的screeningHall是否属于本管理员
         screeningHallService.check(seatService.getById(id).getScreeningHallId());
 

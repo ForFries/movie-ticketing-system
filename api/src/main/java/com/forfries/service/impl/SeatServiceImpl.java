@@ -97,7 +97,7 @@ public class SeatServiceImpl extends ServiceImpl<SeatMapper, Seat>
     public SeatVO getSeats(Long screeningHallId) {
         QueryWrapper<Seat> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("screening_hall_id", screeningHallId);
-        //TODO 这里状态
+        //TODO 这里状态不一定是DISABLED
         queryWrapper.ne("status", StatusConstant.DISABLED);
         List<Seat> seats = seatMapper.selectList(queryWrapper);
         long colNum = 0;
