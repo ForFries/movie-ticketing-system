@@ -8,10 +8,10 @@
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="screeningHallId" column="screening_hall_id" jdbcType="BIGINT"/>
             <result property="status" column="status" jdbcType="VARCHAR"/>
-            <result property="row" column="row" jdbcType="INTEGER"/>
-            <result property="col" column="col" jdbcType="INTEGER"/>
-            <result property="rowId" column="row_id" jdbcType="VARCHAR"/>
-            <result property="colId" column="col_id" jdbcType="VARCHAR"/>
+            <result property="posRow" column="pos_row" jdbcType="INTEGER"/>
+            <result property="posCol" column="pos_col" jdbcType="INTEGER"/>
+            <result property="rowNum" column="row_num" jdbcType="VARCHAR"/>
+            <result property="colNum" column="col_num" jdbcType="VARCHAR"/>
             <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
             <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>
     </resultMap>

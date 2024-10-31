@@ -20,13 +20,13 @@ public class Seat implements Serializable {
 
     private String status;
 
-    private Integer row;
+    private Integer posRow;
 
-    private Integer col;
+    private Integer posCol;
 
-    private String rowId;
+    private String rowNum;
 
-    private String colId;
+    private String colNum;
 
     private LocalDateTime createdAt;
 

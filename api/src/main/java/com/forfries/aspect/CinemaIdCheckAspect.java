@@ -35,12 +35,10 @@ public class CinemaIdCheckAspect {
 
         log.info("进入CinemaIdCheck_AOP");
 
-        Map<String, Claim> currentClaims = BaseContext.getCurrentClaims();
-        if(currentClaims.get("role").asString().equals(RoleConstant.ROLE_SYSTEM_ADMIN))
-            return joinPoint.proceed();
+        Map<String, String> payload = BaseContext.getCurrentPayload();
 
         // 获取当前管理员的 cinemaId
-        String adminCinemaId = currentClaims.get("cinemaId").asString();
+        String adminCinemaId = payload.get("cinemaId");
 
         // 获取方法参数
         Object[] args = joinPoint.getArgs();

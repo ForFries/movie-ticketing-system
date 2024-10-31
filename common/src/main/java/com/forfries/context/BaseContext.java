@@ -6,17 +6,17 @@ import java.util.Map;
 
 public class BaseContext {
 
-    public static ThreadLocal<Map<String, Claim>> threadLocal = new ThreadLocal<>();
+    public static ThreadLocal<Map<String, String>> threadLocal = new ThreadLocal<>();
 
-    public static void setCurrentClaims(Map<String, Claim> claims) {
-        threadLocal.set(claims);
+    public static void setCurrentPayload(Map<String, String> map) {
+        threadLocal.set(map);
     }
 
-    public static Map<String, Claim> getCurrentClaims() {
+    public static Map<String, String> getCurrentPayload() {
         return threadLocal.get();
     }
 
-    public static void removeCurrentClaims() {
+    public static void removeCurrentPayload() {
         threadLocal.remove();
     }
 

@@ -6,9 +6,11 @@ import com.forfries.constant.MessageConstant;
 import com.forfries.dto.SchedulePageDTO;
 import com.forfries.entity.Schedule;
 import com.forfries.exception.InconsistentIDException;
+import com.forfries.mapper.ScheduleMapper;
 import com.forfries.result.PageResult;
 import com.forfries.result.Result;
 import com.forfries.service.ScheduleService;
+import com.forfries.service.ScreeningHallService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,15 +24,19 @@ public class AdminScheduleController {
     @Autowired
     private ScheduleService scheduleService;
 
+    @Autowired
+    private ScreeningHallService screeningHallService;
+
     @GetMapping
     public Result<PageResult> pageSchedules(SchedulePageDTO schedulePageDTO) {
-
+        screeningHallService.check(schedulePageDTO.getScreeningHallId());
         PageResult pageResult = scheduleService.page(schedulePageDTO);
         return Result.success(pageResult);
     }
 
     @GetMapping("/{id}")
     public Result<Schedule> getScheduleById(@PathVariable long id) {
+
         return Result.success(scheduleService.getByIdWithCheck(id));
     }
 
@@ -42,10 +48,12 @@ public class AdminScheduleController {
     //TODO 时间不应该冲突
     @PostMapping
     public Result<?> addSchedule(@RequestParam Long cinemaId,
-                                      @RequestBody Schedule schedule) {
+                                 @RequestBody Schedule schedule) {
 
         if(!schedule.getCinemaId().equals(cinemaId))
             throw new InconsistentIDException(MessageConstant.INCONSISTENT_CINEMA_ID);
+
+        screeningHallService.check(schedule.getScreeningHallId());
 
         scheduleService.addWithoutConflict(schedule);
         return Result.success();
@@ -60,6 +68,8 @@ public class AdminScheduleController {
 
         if(!schedule.getCinemaId().equals(cinemaId))
             throw new InconsistentIDException(MessageConstant.INCONSISTENT_CINEMA_ID);
+
+        screeningHallService.check(schedule.getScreeningHallId());
 
         scheduleService.updateByIdWithCheckWithoutConflict(id,schedule);
         return Result.success();

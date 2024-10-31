@@ -22,4 +22,8 @@ public abstract class PageableWithCheckServiceImpl<M extends BaseMapper<T>, T,D 
    public boolean updateByIdWithCheck(Long id,T t){
        return updateById(t);
    }
+    @CinemaIdCheck
+    public boolean check(Long id){
+        return true;
+   }
 }

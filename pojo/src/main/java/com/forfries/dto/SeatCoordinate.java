@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class SeatCoordinate {
-    private int col;
     private int row;
+    private int col;
 }

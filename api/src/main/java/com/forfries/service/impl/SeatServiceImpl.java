@@ -1,5 +1,6 @@
 package com.forfries.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.forfries.constant.StatusConstant;
 import com.forfries.dto.SeatCoordinate;
@@ -9,6 +10,8 @@ import com.forfries.entity.Seat;
 import com.forfries.service.ScreeningHallService;
 import com.forfries.service.SeatService;
 import com.forfries.mapper.SeatMapper;
+import com.forfries.vo.SeatVO;
+import com.jayway.jsonpath.internal.function.numeric.Max;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +34,7 @@ public class SeatServiceImpl extends ServiceImpl<SeatMapper, Seat>
     private ScreeningHallService screeningHallService;
 
     @Override
-    public void addSeats(SeatDTO seatDTO) {
+    public boolean addSeats(SeatDTO seatDTO) {
 
         long screeningHallId = seatDTO.getScreeningHallId();
 
@@ -41,14 +44,14 @@ public class SeatServiceImpl extends ServiceImpl<SeatMapper, Seat>
 
         // 创建座位
         List<Seat> seats = new ArrayList<>();
-        int seatNumber = 1; // 座位号从1开始
+        int colNumber = 1; // 座位号从1开始
         int rowNumber = 1;
         int row = 1; // 座位号从1开始
         int col = 1;
         for (SeatCoordinate coordinate : sortedCoordinates) {
             if(coordinate.getRow()!=row)
             {
-                seatNumber=1;
+                colNumber=1;
                 rowNumber++;
             }
             row = coordinate.getRow();
@@ -56,17 +59,17 @@ public class SeatServiceImpl extends ServiceImpl<SeatMapper, Seat>
             Seat seat = Seat.builder()
                     .screeningHallId(screeningHallId)
                     .status(StatusConstant.NORMAL) // 默认座位可用
-                    .row(row)
-                    .col(col)
-                    .rowId(String.valueOf(rowNumber)) // 行号
-                    .colId(String.valueOf(seatNumber)) // 列号
+                    .posRow(row)
+                    .posCol(col)
+                    .rowNum(String.valueOf(rowNumber)) // 行号
+                    .colNum(String.valueOf(colNumber)) // 列号
                     .build();
 
             seats.add(seat);
-            seatNumber++; // 座位号递增
+            colNumber++; // 座位号递增
         }
 
-        seatMapper.insert(seats); // 批量插入座位
+        this.saveBatch(seats);
 
         ScreeningHall updateScreeningHall = new ScreeningHall();
         updateScreeningHall.setId(screeningHallId);
@@ -75,7 +78,56 @@ public class SeatServiceImpl extends ServiceImpl<SeatMapper, Seat>
 
         screeningHallService.updateById(updateScreeningHall);
 
+        return true;
     }
+
+    public boolean deleteSeats(Long screeningHallId){
+
+        // 创建 QueryWrapper 并设置删除条件
+        QueryWrapper<Seat> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("screening_hall_id", screeningHallId);
+
+        // 执行删除操作
+        seatMapper.delete(queryWrapper);
+
+        return true;
+    }
+
+    @Override
+    public SeatVO getSeats(Long screeningHallId) {
+        QueryWrapper<Seat> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("screening_hall_id", screeningHallId);
+        //TODO 这里状态
+        queryWrapper.ne("status", StatusConstant.DISABLED);
+        List<Seat> seats = seatMapper.selectList(queryWrapper);
+        long colNum = 0;
+        long rowNum = 0;
+        for (Seat seat : seats) {
+            colNum = Math.max(colNum,seat.getPosCol());
+            rowNum = Math.max(rowNum,seat.getPosRow());
+        }
+        SeatVO seatVO = SeatVO.builder()
+                .screeningHallId(screeningHallId)
+                .colNum(colNum)
+                .rowNum(rowNum)
+                .seats(seats)
+                .build();
+
+        return seatVO;
+    }
+
+    @Override
+    public boolean update(Long id, String status) {
+
+        Seat seat = Seat.builder()
+                .id(id)
+                .status(status)
+                .build();
+        updateById(seat);
+
+        return true;
+    }
+
 }
 
 

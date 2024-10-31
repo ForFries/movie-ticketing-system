@@ -32,11 +32,11 @@ public class GlobalExceptionHandler {
      * @param ex
      * @return
      */
-    @ExceptionHandler
-    public Result exceptionHandler(Exception ex){
-        log.error("通用异常：{}", ex.getMessage());
-        return Result.error(ex.getMessage());
-    }
+//    @ExceptionHandler
+//    public Result exceptionHandler(Exception ex){
+//        log.error("通用异常：{}", ex.getMessage());
+//        return Result.error(ex.getMessage());
+//    }
 
 
     /**

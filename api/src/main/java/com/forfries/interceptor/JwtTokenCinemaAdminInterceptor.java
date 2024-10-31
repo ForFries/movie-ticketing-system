@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -53,14 +54,29 @@ public class JwtTokenCinemaAdminInterceptor implements HandlerInterceptor {
                 jwtProperties.getAdminSecretKey(),
                 token);
         log.info("token : {}", payload);
-        BaseContext.setCurrentClaims(payload);
-        if(payload.get("role").asString().equals(RoleConstant.ROLE_SYSTEM_ADMIN)){
-            return true;
-        }
 
+        Map<String,String> map = new HashMap<>();
+        String payloadRole = payload.get("role").asString();
+        String payloadUserId = payload.get("userId").asString();
+        String payloadCinemaId = payload.get("cinemaId").asString();
         String cinemaId = request.getParameter("cinemaId");
-        if(!cinemaId.equals(payload.get("cinemaId").asString()))
+
+        if(payloadRole.equals(RoleConstant.ROLE_USER))
             throw new PermissionErrorException(MessageConstant.PERMISSION_ERROR);
+
+        if(cinemaId == null || cinemaId.isEmpty())
+            throw new PermissionErrorException(MessageConstant.PERMISSION_ERROR_NULL);
+
+        if(payloadRole.equals(RoleConstant.ROLE_CINEMA_ADMIN)
+                &&!payloadCinemaId.equals(cinemaId))
+            throw new PermissionErrorException(MessageConstant.PERMISSION_ERROR_ID);
+
+        map.put("role",payloadRole);
+        map.put("userId",payloadUserId);
+        map.put("cinemaId",cinemaId);
+
+        BaseContext.setCurrentPayload(map);
+
         return true;
 
     }
