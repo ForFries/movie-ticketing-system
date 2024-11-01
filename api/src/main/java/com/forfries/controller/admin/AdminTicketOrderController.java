@@ -33,12 +33,13 @@ public class AdminTicketOrderController {
 
     @GetMapping("/{id}")
     public Result<TicketOrder> getTicketOrderById(@PathVariable long id) {
-        return Result.success(ticketOrderService.getById(id));
+        return Result.success(ticketOrderService.getByIdWithCheck(id));
     }
 
     @DeleteMapping("/{id}")
-    public Result<?> deleteTicketOrderById(@PathVariable long id) {
-
+    public Result<?> cancelTicketOrderById(@PathVariable long id) {
+        //TODO 取消订单 但是不删除订单
+        ticketOrderService.cancelTicketOrder(id);
         return Result.success();
     }
 

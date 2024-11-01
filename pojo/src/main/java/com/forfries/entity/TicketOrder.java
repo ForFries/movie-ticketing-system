@@ -20,6 +20,8 @@ public class TicketOrder implements Serializable {
 
     private Long userId;
 
+    private Long cinemaId;
+
     private String orderNum;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)

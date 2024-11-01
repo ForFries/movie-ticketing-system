@@ -1,10 +1,11 @@
 package com.forfries.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.forfries.common.Impl.PageableServiceImpl;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.forfries.annotation.CinemaIdCheck;
+import com.forfries.common.Impl.PageableWithCheckServiceImpl;
 import com.forfries.constant.MessageConstant;
 import com.forfries.constant.StatusConstant;
-import com.forfries.constant.TimeConstant;
 import com.forfries.context.BaseContext;
 import com.forfries.dto.TicketOrderGenerationDTO;
 import com.forfries.dto.TicketOrderPageDTO;
@@ -12,24 +13,20 @@ import com.forfries.entity.Schedule;
 import com.forfries.entity.Seat;
 import com.forfries.entity.Ticket;
 import com.forfries.entity.TicketOrder;
+import com.forfries.exception.InconsistentIDException;
 import com.forfries.exception.SeatOccupiedException;
 import com.forfries.exception.StandardizationErrorException;
 import com.forfries.exception.SystemException;
 import com.forfries.mapper.TicketOrderMapper;
-import com.forfries.result.Result;
 import com.forfries.service.*;
 import com.forfries.vo.ScheduleSeatVO;
-import com.forfries.vo.SeatVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.concurrent.ScheduledFuture;
 
 /**
 * @author Nolan
@@ -37,7 +34,7 @@ import java.util.concurrent.ScheduledFuture;
 * @createDate 2024-10-30 15:37:57
 */
 @Service
-public class TicketOrderServiceImpl extends PageableServiceImpl<TicketOrderMapper, TicketOrder, TicketOrderPageDTO>
+public class TicketOrderServiceImpl extends PageableWithCheckServiceImpl<TicketOrderMapper, TicketOrder, TicketOrderPageDTO>
         implements TicketOrderService {
 
     @Autowired
@@ -58,8 +55,8 @@ public class TicketOrderServiceImpl extends PageableServiceImpl<TicketOrderMappe
     @Autowired
     private SeatService seatService;
 
-    @Autowired
-    private TaskScheduler taskScheduler;
+//    @Autowired
+//    private TaskScheduler taskScheduler;
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
 
@@ -76,15 +73,15 @@ public class TicketOrderServiceImpl extends PageableServiceImpl<TicketOrderMappe
     protected void buildQueryWrapper(QueryWrapper<TicketOrder> queryWrapper, TicketOrderPageDTO ticketOrderPageDTO) {
         String orderNum = ticketOrderPageDTO.getOrderNum();
         if (orderNum != null && !orderNum.isEmpty()) {
-            queryWrapper.like("orderNum", orderNum);
+            queryWrapper.like("order_num", orderNum);
         }
         Long scheduleId = ticketOrderPageDTO.getScheduleId();
         if (scheduleId != null ) {
-            queryWrapper.eq("scheduleId", scheduleId);
+            queryWrapper.eq("schedule_id", scheduleId);
         }
         Long userId = ticketOrderPageDTO.getUserId();
         if (userId != null ) {
-            queryWrapper.eq("userId", userId);
+            queryWrapper.eq("user_id", userId);
         }
         queryWrapper.eq("cinema_id", ticketOrderPageDTO.getCinemaId());
         // 可以添加更多的查询条件
@@ -100,16 +97,22 @@ public class TicketOrderServiceImpl extends PageableServiceImpl<TicketOrderMappe
         if(seatIds == null || seatIds.isEmpty()){
             throw new StandardizationErrorException(MessageConstant.STANDARDIZATION_ERROR);
         }
-
+        Schedule schedule = scheduleService.getById(ticketOrderGenerationDTO.getScheduleId());
         this.checkSeatMaintenance(seatIds);
-        this.checkSeatOccupied(seatIds, ticketOrderGenerationDTO.getScheduleId());
-
+        this.checkSeatOccupied(seatIds, schedule.getId());
+        this.checkSeatBelong(seatIds,schedule.getScreeningHallId());
         int ticketCount = seatIds.size();
         //设置状态
         //TODO 这里可能要设置不同的状态哦 目前是只要创建订单 订单就为Normal 票为Normal
-        BigDecimal price4One = scheduleService.getById(ticketOrderGenerationDTO.getScheduleId()).getTicketPrice();
+
+
+        //TODO 这里是验证管理员权限
+        scheduleService.check(schedule.getId());
+
+        BigDecimal price4One = schedule.getTicketPrice();
         TicketOrder ticketOrder = TicketOrder.builder()
                 .userId(userId)
+                .cinemaId(schedule.getCinemaId())
                 .orderNum(generateOrderNumber())
                 .totalPrice(price4One.multiply(BigDecimal.valueOf(ticketCount)))
                 .status(StatusConstant.NORMAL)
@@ -139,6 +142,17 @@ public class TicketOrderServiceImpl extends PageableServiceImpl<TicketOrderMappe
         return true;
     }
 
+    private void checkSeatBelong(List<Long> seatIds, Long screeningHallId) {
+
+        QueryWrapper<Seat> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("id", seatIds)
+                .eq("screening_hall_id", screeningHallId);
+
+        if(seatService.count(queryWrapper) == 0)
+            throw new InconsistentIDException(MessageConstant.INCONSISTENT_SEAT_ID);
+
+    }
+
     private boolean checkSeatMaintenance(List<Long> seatIds) {
         if(seatService.checkSeatStatus(seatIds))
             throw new SeatOccupiedException(MessageConstant.SEAT_IN_MAINTENANCE);
@@ -153,8 +167,7 @@ public class TicketOrderServiceImpl extends PageableServiceImpl<TicketOrderMappe
         QueryWrapper<Ticket> queryWrapper = new QueryWrapper<>();
         queryWrapper.in("seat_id", seatIds)
                 .eq("schedule_id", scheduleId)
-                .ne("status", StatusConstant.REFUNDED)
-                .ne("status",StatusConstant.CANCELED);
+                .ne("status", StatusConstant.NOT_AVAILABLE);
 
         if(ticketService.count(queryWrapper) != 0)
             throw new SeatOccupiedException(MessageConstant.SEAT_OCCUPIED);
@@ -210,17 +223,32 @@ public class TicketOrderServiceImpl extends PageableServiceImpl<TicketOrderMappe
         return scheduleSeatVO;
     }
 
+    @Override
+    @CinemaIdCheck
+    public boolean cancelTicketOrder(long id) {
+
+        UpdateWrapper<TicketOrder> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("id", id)
+                .set("status", StatusConstant.CANCELED);
+        update(updateWrapper);
+
+        UpdateWrapper<Ticket> updateWrapper2 = new UpdateWrapper<>();
+        updateWrapper2.eq("order_id", id)
+                .set("status", StatusConstant.NOT_AVAILABLE);
+        return ticketService.update(updateWrapper2);
+    }
+
     private void scheduleCancelTask(Long orderId) {
-        Runnable cancelTask = () -> {
-            checkAndCancelOrder(orderId);
-        };
-
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime executeTime = now.plusMinutes(TimeConstant.CANCEL_DELAY_MINUTES);
-
-        ScheduledFuture<?> scheduledFuture = taskScheduler.schedule(cancelTask, Instant.from(executeTime));
-        // 你可以选择保存 scheduledFuture 到某个地方以便于后续管理（例如取消任务）
-        scheduledFuture.cancel(false);
+//        Runnable cancelTask = () -> {
+//            checkAndCancelOrder(orderId);
+//        };
+//
+//        LocalDateTime now = LocalDateTime.now();
+//        LocalDateTime executeTime = now.plusMinutes(TimeConstant.CANCEL_DELAY_MINUTES);
+//
+//        ScheduledFuture<?> scheduledFuture = taskScheduler.schedule(cancelTask, Instant.from(executeTime));
+//        // 你可以选择保存 scheduledFuture 到某个地方以便于后续管理（例如取消任务）
+//        scheduledFuture.cancel(false);
     }
     private void checkAndCancelOrder(Long orderId) {
 

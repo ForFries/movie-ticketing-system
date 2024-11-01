@@ -12,6 +12,8 @@ public class MessageConstant {
     public static final String COULD_NOT_FIND = "无对应";
     public static final String INCONSISTENT_ID = "ID不一致，请检查Path 参数和Body id参数是否一致";
     public static final String INCONSISTENT_CINEMA_ID = "cinemaId不一致，请检查Query 参数 cinemaId和Body 参数cinemaId是否一致";
+    public static final String INCONSISTENT_SEAT_ID = "seatId不一致，请检查Schedule的screeningHallId与seatId的screeningHallId是否一致";
+
 
     public static final String PERMISSION_ERROR = "权限错误，请检查token是否具有该权限！";
     public static final String PERMISSION_ERROR_NULL = "权限错误，请检查Query 参数是否含有cinemaId";
@@ -32,6 +34,7 @@ public class MessageConstant {
 
     public static final String SEAT_OCCUPIED = "座位已经被占领啦！请重新选座";
     public static final String SEAT_IN_MAINTENANCE = "座位正在维修！请重新选座";
+
 //  public static final String
 //  public static final String
 //  public static final String
