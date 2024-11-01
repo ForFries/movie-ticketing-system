@@ -8,16 +8,18 @@ import com.forfries.constant.TimeConstant;
 import com.forfries.context.BaseContext;
 import com.forfries.dto.TicketOrderGenerationDTO;
 import com.forfries.dto.TicketOrderPageDTO;
+import com.forfries.entity.Schedule;
+import com.forfries.entity.Seat;
 import com.forfries.entity.Ticket;
 import com.forfries.entity.TicketOrder;
 import com.forfries.exception.SeatOccupiedException;
 import com.forfries.exception.StandardizationErrorException;
 import com.forfries.exception.SystemException;
 import com.forfries.mapper.TicketOrderMapper;
-import com.forfries.service.ScheduleService;
-import com.forfries.service.SeatService;
-import com.forfries.service.TicketOrderService;
-import com.forfries.service.TicketService;
+import com.forfries.result.Result;
+import com.forfries.service.*;
+import com.forfries.vo.ScheduleSeatVO;
+import com.forfries.vo.SeatVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
@@ -26,9 +28,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.ScheduledFuture;
 
 /**
@@ -39,8 +39,15 @@ import java.util.concurrent.ScheduledFuture;
 @Service
 public class TicketOrderServiceImpl extends PageableServiceImpl<TicketOrderMapper, TicketOrder, TicketOrderPageDTO>
         implements TicketOrderService {
+
     @Autowired
-    private TicketOrderMapper ticketOrderMapper;
+    private CinemaService cinemaService;
+
+    @Autowired
+    private MovieService movieService;
+
+    @Autowired
+    private ScreeningHallService screeningHallService;
 
     @Autowired
     private TicketService ticketService;
@@ -154,6 +161,55 @@ public class TicketOrderServiceImpl extends PageableServiceImpl<TicketOrderMappe
 
         return false;
     }
+
+    @Override
+    public ScheduleSeatVO getScheduleSeats(Long scheduleId) {
+        //TODO 这个数据经常被访问，最好放在Redis中
+        QueryWrapper<Ticket> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("schedule_id", scheduleId);
+        List<Ticket> tickets = ticketService.list(queryWrapper);
+        Map<Long, Boolean> seatIdMap = new HashMap<>();
+        for (Ticket ticket : tickets) {
+            seatIdMap.put(ticket.getSeatId(), true);
+        }
+
+
+        Schedule schedule = scheduleService.getById(scheduleId);
+        QueryWrapper<Seat> queryWrapper2 = new QueryWrapper<>();
+        queryWrapper2.eq("screening_hall_id", schedule.getScreeningHallId());
+        //TODO 这里状态不一定是DISABLED
+        queryWrapper2.ne("status", StatusConstant.DISABLED);
+        List<Seat> seats = seatService.list(queryWrapper2);
+
+        long colNum = 0;
+        long rowNum = 0;
+        for (Seat seat : seats) {
+            colNum = Math.max(colNum,seat.getPosCol());
+            rowNum = Math.max(rowNum,seat.getPosRow());
+            if (seatIdMap.containsKey(seat.getId())) {
+                seat.setStatus(StatusConstant.OCCUPIED);
+            }
+        }
+        Long cinemaId = schedule.getCinemaId();
+        Long movieId = schedule.getMovieId();
+        Long screeningHallId = schedule.getScreeningHallId();
+        ScheduleSeatVO scheduleSeatVO = ScheduleSeatVO.builder()
+                .cinemaId(cinemaId)
+                .cinemaName(cinemaService.getById(cinemaId).getName())
+                .movieId(movieId)
+                .movieTitle(movieService.getById(movieId).getTitle())
+                .screeningHallId(screeningHallId)
+                .screeningHallName(screeningHallService.getById(screeningHallId).getName())
+                .scheduleId(scheduleId)
+                .scheduleInfo(schedule.getCreatedAt().toString())
+                .colCount(colNum)
+                .rowCount(rowNum)
+                .seats(seats)
+                .build();
+
+        return scheduleSeatVO;
+    }
+
     private void scheduleCancelTask(Long orderId) {
         Runnable cancelTask = () -> {
             checkAndCancelOrder(orderId);

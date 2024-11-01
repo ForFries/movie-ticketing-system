@@ -2,6 +2,8 @@ package com.forfries.service;
 
 import com.forfries.entity.Ticket;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.forfries.result.Result;
+import com.forfries.vo.ScheduleSeatVO;
 
 /**
 * @author Nolan

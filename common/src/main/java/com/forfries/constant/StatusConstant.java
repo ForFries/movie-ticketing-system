@@ -26,7 +26,7 @@ public class StatusConstant {
     //座位状态
     //维修中
     public static final String IN_MAINTENANCE = "5";
-
+    public static final String OCCUPIED= "15";
 
     //票状态（座位场次状态）
     public static final String AVAILABLE = "13";

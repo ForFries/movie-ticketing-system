@@ -1,9 +1,12 @@
 package com.forfries.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.forfries.entity.Ticket;
+import com.forfries.result.Result;
 import com.forfries.service.TicketService;
 import com.forfries.mapper.TicketMapper;
+import com.forfries.vo.ScheduleSeatVO;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class TicketServiceImpl extends ServiceImpl<TicketMapper, Ticket>
     implements TicketService{
+
 
 }
 
