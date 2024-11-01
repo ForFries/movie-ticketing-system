@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Slf4j
 @RequestMapping("/api")
-public class CommonController {
+public class LoginRegisterController {
 
     @Autowired
     private UserService userService;

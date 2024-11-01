@@ -10,6 +10,8 @@ import com.forfries.dto.PageDTO;
 import com.forfries.result.PageResult;
 import com.forfries.common.PageableService;
 
+import java.util.Arrays;
+
 public abstract class PageableServiceImpl<M extends BaseMapper<T>, T,D extends PageDTO>
         extends ServiceImpl<M, T>
         implements PageableService<T,D> {
@@ -23,15 +25,13 @@ public abstract class PageableServiceImpl<M extends BaseMapper<T>, T,D extends P
         QueryWrapper<T> queryWrapper = new QueryWrapper<>();
         //这里加了对status的更新，支持多个status
         String allStatus = pageDTO.getStatus();
-        String[] statusArray = allStatus.split(",");
-        for (String status : statusArray) {
-            if (status != null && !status.isEmpty()) {
-                queryWrapper.eq("status", status);
-            }
+        if(allStatus != null && !allStatus.isEmpty()){
+            String[] statusArray = allStatus.split(",");
+            queryWrapper.in("status", Arrays.asList(statusArray));
         }
 
-
         // 调用子类的方法来构建 QueryWrapper
+        //TODO 这里还需要根据不同的情况来进行排序 例如用户侧按时间排序之类的
         buildQueryWrapper(queryWrapper, pageDTO);
 
         IPage<T> resultPage = this.page(page, queryWrapper);
