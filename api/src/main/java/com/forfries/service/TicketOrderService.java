@@ -1,12 +1,9 @@
 package com.forfries.service;
 
-import com.forfries.common.service.PageableService;
-import com.forfries.common.service.PageableWithCheckService;
+import com.forfries.common.PageableService;
 import com.forfries.dto.TicketOrderGenerationDTO;
 import com.forfries.dto.TicketOrderPageDTO;
 import com.forfries.entity.TicketOrder;
-import com.forfries.entity.TicketOrder;
-import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
 

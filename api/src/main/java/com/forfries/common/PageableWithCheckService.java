@@ -1,4 +1,4 @@
-package com.forfries.common.service;
+package com.forfries.common;
 
 import com.forfries.dto.PageDTO;
 

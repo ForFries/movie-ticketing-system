@@ -1,7 +1,7 @@
 package com.forfries.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.forfries.common.service.Impl.PageableServiceImpl;
+import com.forfries.common.Impl.PageableServiceImpl;
 import com.forfries.dto.CinemaPageDTO;
 import com.forfries.entity.Cinema;
 import com.forfries.service.CinemaService;

@@ -1,10 +1,10 @@
-package com.forfries.common.service.Impl;
+package com.forfries.common.Impl;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 import com.forfries.annotation.CinemaIdCheck;
 import com.forfries.dto.PageDTO;
-import com.forfries.common.service.PageableService;
+import com.forfries.common.PageableService;
 
 public abstract class PageableWithCheckServiceImpl<M extends BaseMapper<T>, T,D extends PageDTO>
         extends PageableServiceImpl<M, T, D>

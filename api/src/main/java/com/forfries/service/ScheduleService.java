@@ -1,6 +1,6 @@
 package com.forfries.service;
 
-import com.forfries.common.service.PageableWithCheckService;
+import com.forfries.common.PageableWithCheckService;
 import com.forfries.dto.SchedulePageDTO;
 import com.forfries.entity.Schedule;
 

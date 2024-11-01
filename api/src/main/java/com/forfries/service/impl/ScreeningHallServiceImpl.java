@@ -2,8 +2,7 @@ package com.forfries.service.impl;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.forfries.common.service.Impl.PageableServiceImpl;
-import com.forfries.common.service.Impl.PageableWithCheckServiceImpl;
+import com.forfries.common.Impl.PageableWithCheckServiceImpl;
 import com.forfries.dto.ScreeningHallPageDTO;
 import com.forfries.entity.ScreeningHall;
 import com.forfries.mapper.ScreeningHallMapper;

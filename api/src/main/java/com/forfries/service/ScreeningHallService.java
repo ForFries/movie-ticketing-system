@@ -1,7 +1,6 @@
 package com.forfries.service;
 
-import com.forfries.common.service.PageableService;
-import com.forfries.common.service.PageableWithCheckService;
+import com.forfries.common.PageableWithCheckService;
 import com.forfries.dto.ScreeningHallPageDTO;
 import com.forfries.entity.ScreeningHall;
 

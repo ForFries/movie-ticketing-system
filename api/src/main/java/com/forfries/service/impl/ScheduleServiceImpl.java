@@ -2,7 +2,7 @@ package com.forfries.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
-import com.forfries.common.service.Impl.PageableWithCheckServiceImpl;
+import com.forfries.common.Impl.PageableWithCheckServiceImpl;
 import com.forfries.constant.MessageConstant;
 import com.forfries.dto.SchedulePageDTO;
 

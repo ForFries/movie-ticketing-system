@@ -1,6 +1,6 @@
 package com.forfries.service;
 
-import com.forfries.common.service.PageableService;
+import com.forfries.common.PageableService;
 import com.forfries.dto.CinemaPageDTO;
 import com.forfries.entity.Cinema;
 
