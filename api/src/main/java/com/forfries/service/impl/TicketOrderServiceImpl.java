@@ -2,9 +2,11 @@ package com.forfries.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.fasterxml.jackson.databind.ser.Serializers;
 import com.forfries.annotation.CinemaIdCheck;
 import com.forfries.common.Impl.PageableWithCheckServiceImpl;
 import com.forfries.constant.MessageConstant;
+import com.forfries.constant.RoleConstant;
 import com.forfries.constant.StatusConstant;
 import com.forfries.context.BaseContext;
 import com.forfries.dto.TicketOrderGenerationDTO;
@@ -22,6 +24,7 @@ import com.forfries.service.*;
 import com.forfries.vo.ScheduleSeatVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -83,7 +86,12 @@ public class TicketOrderServiceImpl extends PageableWithCheckServiceImpl<TicketO
         if (userId != null ) {
             queryWrapper.eq("user_id", userId);
         }
-        queryWrapper.eq("cinema_id", ticketOrderPageDTO.getCinemaId());
+
+        //这里要区分管理员和用户
+        if(BaseContext.getCurrentPayload().get("role").equals(RoleConstant.ROLE_USER))
+            queryWrapper.eq("user_id", BaseContext.getCurrentPayload().get("userId"));
+        else
+            queryWrapper.eq("cinema_id", ticketOrderPageDTO.getCinemaId());
         // 可以添加更多的查询条件
         queryWrapper.orderByDesc("updated_at");
     }
@@ -92,22 +100,30 @@ public class TicketOrderServiceImpl extends PageableWithCheckServiceImpl<TicketO
     public boolean createTicketOrder(TicketOrderGenerationDTO ticketOrderGenerationDTO) {
         //管理员添加订单，这里的userId为管理员
         //TODO 管理员当然不用考虑锁的事情，但是用户需要
+
+        //获取创建用户的id
         long userId = Long.parseLong(BaseContext.getCurrentPayload().get("userId"));
+
+        //检查seatIds
         List<Long> seatIds = ticketOrderGenerationDTO.getSeatIds();
         if(seatIds == null || seatIds.isEmpty()){
             throw new StandardizationErrorException(MessageConstant.STANDARDIZATION_ERROR);
         }
+
+        //获取schedule
         Schedule schedule = scheduleService.getById(ticketOrderGenerationDTO.getScheduleId());
+
+        //查询座位是否与ScreeningHallId一致
+        this.checkSeatBelong(seatIds,schedule.getScreeningHallId());
+
+        //检查座位是否维修、座位是否被占领
         this.checkSeatMaintenance(seatIds);
         this.checkSeatOccupied(seatIds, schedule.getId());
-        this.checkSeatBelong(seatIds,schedule.getScreeningHallId());
+
+        //上面全部通过后开始创建订单
         int ticketCount = seatIds.size();
         //设置状态
-        //TODO 这里可能要设置不同的状态哦 目前是只要创建订单 订单就为Normal 票为Normal
-
-
-        //TODO 这里是验证管理员权限
-        scheduleService.check(schedule.getId());
+        //TODO 这里可能要设置不同的状态哦 目前是只要创建订单 订单就为Normal 票为Available
 
         BigDecimal price4One = schedule.getTicketPrice();
         TicketOrder ticketOrder = TicketOrder.builder()
@@ -132,7 +148,7 @@ public class TicketOrderServiceImpl extends PageableWithCheckServiceImpl<TicketO
                     .seatId(seatId)
                     .scheduleId(scheduleId)
                     .orderId(orderId)
-                    .status(StatusConstant.NORMAL)
+                    .status(StatusConstant.AVAILABLE)
                     .build();
             tickets.add(ticket);
         }
@@ -145,34 +161,34 @@ public class TicketOrderServiceImpl extends PageableWithCheckServiceImpl<TicketO
     private void checkSeatBelong(List<Long> seatIds, Long screeningHallId) {
 
         QueryWrapper<Seat> queryWrapper = new QueryWrapper<>();
+        //判断这些座位中有没有ScreeningHall和Schedule不一致的
         queryWrapper.in("id", seatIds)
-                .eq("screening_hall_id", screeningHallId);
+                .ne("screening_hall_id", screeningHallId);
 
-        if(seatService.count(queryWrapper) == 0)
+        if(seatService.count(queryWrapper) != 0)
             throw new InconsistentIDException(MessageConstant.INCONSISTENT_SEAT_ID);
 
     }
 
-    private boolean checkSeatMaintenance(List<Long> seatIds) {
+    private void checkSeatMaintenance(List<Long> seatIds) {
         if(seatService.checkSeatStatus(seatIds))
             throw new SeatOccupiedException(MessageConstant.SEAT_IN_MAINTENANCE);
-
-        return true;
     }
 
 
     @Override
-    public boolean checkSeatOccupied(List<Long> seatIds,Long scheduleId) {
+    public void checkSeatOccupied(List<Long> seatIds, Long scheduleId) {
 
         QueryWrapper<Ticket> queryWrapper = new QueryWrapper<>();
+        //查找所有seatId和scheduleId一致的有效票
         queryWrapper.in("seat_id", seatIds)
                 .eq("schedule_id", scheduleId)
-                .ne("status", StatusConstant.NOT_AVAILABLE);
+                //判断座位是有有票
+                .eq("status", StatusConstant.AVAILABLE);
 
+        //如果存在有效票
         if(ticketService.count(queryWrapper) != 0)
             throw new SeatOccupiedException(MessageConstant.SEAT_OCCUPIED);
-
-        return false;
     }
 
     @Override
@@ -180,20 +196,28 @@ public class TicketOrderServiceImpl extends PageableWithCheckServiceImpl<TicketO
         //TODO 这个数据经常被访问，最好放在Redis中
         QueryWrapper<Ticket> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("schedule_id", scheduleId);
+        //获取被占领的座位
+        queryWrapper.eq("status", StatusConstant.AVAILABLE);
+        //根据scheduleId查找有效ticket
         List<Ticket> tickets = ticketService.list(queryWrapper);
         Map<Long, Boolean> seatIdMap = new HashMap<>();
         for (Ticket ticket : tickets) {
             seatIdMap.put(ticket.getSeatId(), true);
         }
+        //获取seatId根据scheduleId，即有票的座位
 
-
+        //获取schedule
         Schedule schedule = scheduleService.getById(scheduleId);
+
+        //根据schedule的ScreeningHall获取座位表
         QueryWrapper<Seat> queryWrapper2 = new QueryWrapper<>();
         queryWrapper2.eq("screening_hall_id", schedule.getScreeningHallId());
-        //TODO 这里状态不一定是DISABLED
+        //不获取无法看见的座位 即DISABLED
         queryWrapper2.ne("status", StatusConstant.DISABLED);
+        //获取所有座位
         List<Seat> seats = seatService.list(queryWrapper2);
 
+        //获取座标为表的信息，更改对应座位的status
         long colNum = 0;
         long rowNum = 0;
         for (Seat seat : seats) {
@@ -203,6 +227,7 @@ public class TicketOrderServiceImpl extends PageableWithCheckServiceImpl<TicketO
                 seat.setStatus(StatusConstant.OCCUPIED);
             }
         }
+        //返回VO
         Long cinemaId = schedule.getCinemaId();
         Long movieId = schedule.getMovieId();
         Long screeningHallId = schedule.getScreeningHallId();
@@ -225,16 +250,40 @@ public class TicketOrderServiceImpl extends PageableWithCheckServiceImpl<TicketO
 
     @Override
     @CinemaIdCheck
-    public boolean cancelTicketOrder(long id) {
+    public boolean cancelTicketOrderWithCheck(long id) {
+        return cancelTicketOrder(id);
+    }
+
+    @Override
+    public TicketOrder getByIdWithUserCheck(long id) {
+        String userId = BaseContext.getCurrentPayload().get("userId");
+        QueryWrapper<TicketOrder> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id", id)
+                .eq("user_id", userId);
+        return getOne(queryWrapper);
+    }
+
+    @Override
+    public void cancelTicketOrderWithUserCheck(long id) {
+        //TODO 这里要加上管理员审核
+        if(getByIdWithUserCheck(id)!=null)
+            cancelTicketOrder(id);
+    }
+
+    private boolean cancelTicketOrder(long id) {
+        return updateTicketOrderStatus(id,StatusConstant.CANCELED, StatusConstant.NOT_AVAILABLE);
+    }
+
+    private boolean updateTicketOrderStatus(long id,String orderStatus,String ticketStatus) {
 
         UpdateWrapper<TicketOrder> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("id", id)
-                .set("status", StatusConstant.CANCELED);
+                .set("status", orderStatus);
         update(updateWrapper);
 
         UpdateWrapper<Ticket> updateWrapper2 = new UpdateWrapper<>();
         updateWrapper2.eq("order_id", id)
-                .set("status", StatusConstant.NOT_AVAILABLE);
+                .set("status", ticketStatus);
         return ticketService.update(updateWrapper2);
     }
 

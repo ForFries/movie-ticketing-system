@@ -11,9 +11,12 @@ import com.forfries.result.PageResult;
 import com.forfries.result.Result;
 import com.forfries.service.ScheduleService;
 import com.forfries.service.ScreeningHallService;
+import com.forfries.service.TicketOrderService;
+import com.forfries.vo.ScheduleSeatVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.yaml.snakeyaml.events.Event;
 
 
 @RestController
@@ -26,6 +29,9 @@ public class AdminScheduleController {
 
     @Autowired
     private ScreeningHallService screeningHallService;
+
+    @Autowired
+    private TicketOrderService ticketOrderService;
 
     @GetMapping
     public Result<PageResult> pageSchedules(SchedulePageDTO schedulePageDTO) {
@@ -73,6 +79,13 @@ public class AdminScheduleController {
 
         scheduleService.updateByIdWithCheckWithoutConflict(id,schedule);
         return Result.success();
+    }
+
+    @GetMapping("/{scheduleId}/seats")
+    Result<ScheduleSeatVO> getScheduleSeats(@PathVariable Long scheduleId) {
+        screeningHallService.check(scheduleId);
+
+        return Result.success(ticketOrderService.getScheduleSeats(scheduleId));
     }
 
 }

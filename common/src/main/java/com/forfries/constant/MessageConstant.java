@@ -18,7 +18,7 @@ public class MessageConstant {
     public static final String PERMISSION_ERROR = "权限错误，请检查token是否具有该权限！";
     public static final String PERMISSION_ERROR_NULL = "权限错误，请检查Query 参数是否含有cinemaId";
     public static final String PERMISSION_ERROR_ID = "权限错误，请检查token中cinemaId与Query 参数cinemaId是否一致";
-
+    public static final String PERMISSION_ERROR_USER = "权限错误，目前不支持访问User界面";
     public static final String PERMISSION_ERROR_CINEMA = "权限错误，请检查请求的id是否属于该Cinema";
 
     public static final String JWT_ERROR = "JWT令牌解析错误，请检查token";

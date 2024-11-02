@@ -2,6 +2,7 @@ package com.forfries.config;
 
 import com.forfries.interceptor.JwtTokenSystemAdminInterceptor;
 import com.forfries.interceptor.JwtTokenCinemaAdminInterceptor;
+import com.forfries.interceptor.JwtTokenUserInterceptor;
 import com.forfries.json.JacksonObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,8 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
     @Autowired
     private JwtTokenCinemaAdminInterceptor jwtTokenCinemaAdminInterceptor;
 
+    @Autowired
+    private JwtTokenUserInterceptor jwtTokenUserInterceptor;
     protected void addInterceptors(InterceptorRegistry registry) {
         log.info("开始注册系统管理员拦截器...");
         registry.addInterceptor(jwtTokenSystemAdminInterceptor)
@@ -33,6 +36,10 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
                 .addPathPatterns("/api/admin/**")
                 .excludePathPatterns("/api/admin/movies/**")
                 .excludePathPatterns("/api/admin/cinemas/**");
+
+        log.info("开始注册用户拦截器...");
+        registry.addInterceptor(jwtTokenUserInterceptor)
+                .addPathPatterns("/api/user/**");
 
     }
 
