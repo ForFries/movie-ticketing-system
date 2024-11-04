@@ -52,4 +52,16 @@ public class StatusConstant {
 
     //已取消
     public static final String CANCELED = "12";
+
+    //评论状态
+    //待审核
+    public static final String PENDING_REVIEW = "15";
+
+    //审核通过
+    public static final String PASSED = "16";
+//    public static final String
+//    public static final String
+//    public static final String
+//    public static final String
+
 }

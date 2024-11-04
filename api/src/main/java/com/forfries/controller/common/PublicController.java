@@ -2,7 +2,9 @@ package com.forfries.controller.common;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.forfries.constant.NormalStatusConstant;
+import com.forfries.context.BaseContext;
 import com.forfries.dto.CinemaPageDTO;
+import com.forfries.dto.CommentPageDTO;
 import com.forfries.dto.MoviePageDTO;
 import com.forfries.dto.SchedulePageDTO;
 import com.forfries.entity.Ticket;
@@ -31,6 +33,8 @@ public class PublicController {
     private ScheduleService scheduleService;
     @Autowired
     private TicketOrderService ticketOrderService;
+    @Autowired
+    private CommentService commentService;
 
     @GetMapping("/movies")
     Result<PageResult> pageMovies(MoviePageDTO moviePageDTO) {
@@ -52,8 +56,16 @@ public class PublicController {
 
    @GetMapping("/schedule/{scheduleId}/seats")
     Result<ScheduleSeatVO> getScheduleSeats(@PathVariable Long scheduleId) {
+
        return Result.success(ticketOrderService.getScheduleSeats(scheduleId));
    }
 
-
+    @GetMapping("/movies/{id}/comments")
+    Result<PageResult> pageComments(@PathVariable Long id) {
+        CommentPageDTO commentPageDTO = CommentPageDTO.builder()
+                .movieId(id)
+                .build();
+        commentPageDTO.setStatus(NormalStatusConstant.NORMAL_STATUS);
+        return Result.success(commentService.page(commentPageDTO));
+    }
 }

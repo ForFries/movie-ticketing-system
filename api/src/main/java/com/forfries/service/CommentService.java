@@ -3,8 +3,6 @@ package com.forfries.service;
 import com.forfries.common.PageableService;
 import com.forfries.dto.CommentPageDTO;
 import com.forfries.entity.Comment;
-import com.forfries.entity.Comment;
-import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
 * @author Nolan
@@ -13,4 +11,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface CommentService extends PageableService<Comment, CommentPageDTO> {
 
+    Comment getByIdWithCheck(Long id);
+
+    boolean deleteByIdWithCheck(Long id);
+
+    boolean updateByIdWithCheck(Long id, Comment comment);
+
+    boolean check(Long id);
 }

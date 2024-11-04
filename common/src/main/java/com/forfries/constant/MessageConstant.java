@@ -20,6 +20,7 @@ public class MessageConstant {
     public static final String PERMISSION_ERROR_ID = "权限错误，请检查token中cinemaId与Query 参数cinemaId是否一致";
     public static final String PERMISSION_ERROR_USER = "权限错误，目前不支持访问User界面";
     public static final String PERMISSION_ERROR_CINEMA = "权限错误，请检查请求的id是否属于该Cinema";
+    public static final String PERMISSION_ERROR_USER_ID = "权限错误，请检查请求的id是否属于该User";
 
     public static final String JWT_ERROR = "JWT令牌解析错误，请检查token";
     public static final String SYSTEM_ERROR_ILLEGAL_ARGUMENT = "方法中没有含有id的参数";
@@ -34,6 +35,7 @@ public class MessageConstant {
 
     public static final String SEAT_OCCUPIED = "座位已经被占领啦！请重新选座";
     public static final String SEAT_IN_MAINTENANCE = "座位正在维修！请重新选座";
+
 
 //  public static final String
 //  public static final String
