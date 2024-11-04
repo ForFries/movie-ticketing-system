@@ -1,24 +1,26 @@
 package com.forfries.config;
-import com.forfries.websocket.WebSocketServer;
-import org.springframework.context.annotation.Bean;
+import com.forfries.handler.WebSocketHandler;
+import com.forfries.interceptor.JwtHandshakeInterceptor;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.context.annotation.Configuration;
 
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
-import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 @Configuration
 @EnableWebSocket
-public class WebSocketConfig{
-    @Bean
-    public ServerEndpointExporter serverEndpointExporter (){
+public class WebSocketConfig implements WebSocketConfigurer {
+    @Autowired
+    private JwtHandshakeInterceptor jwtHandshakeInterceptor;
 
-        ServerEndpointExporter exporter = new ServerEndpointExporter();
+    @Override
+    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+        registry.addHandler(new WebSocketHandler(), "/ws")
+                .addInterceptors(jwtHandshakeInterceptor)
+                .setAllowedOrigins("*");
 
-        // 手动注册 WebSocket 端点
-        exporter.setAnnotatedEndpointClasses(WebSocketServer.class);
-
-        return exporter;
     }
 }

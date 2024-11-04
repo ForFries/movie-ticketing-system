@@ -25,6 +25,7 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 
     @Autowired
     private JwtTokenUserInterceptor jwtTokenUserInterceptor;
+
     protected void addInterceptors(InterceptorRegistry registry) {
         log.info("开始注册系统管理员拦截器...");
         registry.addInterceptor(jwtTokenSystemAdminInterceptor)
