@@ -10,6 +10,12 @@
 
 文件管理：阿里云OSS
 
+## 亮点
+
+使用了面向模板的编程
+
+
+
 ## 权限管理
 
 一个系统的关键在于权限管理
@@ -25,8 +31,8 @@
 
 ```json
 {
-    userId="1234",
-    role="cinema_admin",  //或"system_admin" 或"user"
+    userId="1234";
+    role="cinema_admin"  //或"system_admin" 或"user"
     cinemaId="112111"    //这里仅在role="cinema_admin"时存在
 }
 ```
@@ -89,7 +95,7 @@
 
 #### System_Admin权限
 
-使用拦截器方案，不进行任何检测
+使用拦截器方案
 
 
 
@@ -98,3 +104,20 @@
 1. 微信登陆
 2. 支付系统（下单后转为未支付状态，扫码支付后转为支付状态）
 3. 评论系统
+
+
+
+### 需要缓存的数据
+
+1. 电影信息（Status正常）
+
+2. 影院信息
+
+3. ScheduleSeat信息
+
+
+
+### 需要WebSocket
+
+1. 审核
+2. 取消订单

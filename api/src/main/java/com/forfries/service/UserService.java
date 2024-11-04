@@ -14,7 +14,6 @@ public interface UserService extends IService<User> {
 
     String createToken(String username, String password);
 
-
     User register(String username, String password,String role);
 
     User register(String username, String password,String role,Long cinemaId);
