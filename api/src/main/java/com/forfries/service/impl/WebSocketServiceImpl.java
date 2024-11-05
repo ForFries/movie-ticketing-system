@@ -1,5 +1,7 @@
 package com.forfries.service.impl;
 
+import com.forfries.constant.MessageConstant;
+import com.forfries.exception.WebSocketException;
 import com.forfries.service.WebSocketService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
@@ -10,6 +12,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+
+//目前仅支持CinemaAdmin、Admin的消息发送
 @Service
 public class WebSocketServiceImpl implements WebSocketService {
     private final Map<String, List<WebSocketSession>> cinemaAdminSessions = new ConcurrentHashMap<>();
@@ -28,13 +32,16 @@ public class WebSocketServiceImpl implements WebSocketService {
     }
 
     public void sendRefundNotification(String cinemaId, String ticketId) {
+        sendMessageToCinemaAdmin(cinemaId,"New refund request for ticket ID: " + ticketId);
+    }
+    public void sendMessageToCinemaAdmin(String cinemaId , String Message) {
         List<WebSocketSession> sessions = cinemaAdminSessions.get(cinemaId);
         if (sessions != null) {
             for (WebSocketSession session : sessions) {
                 try {
-                    session.sendMessage(new TextMessage("New refund request for ticket ID: " + ticketId));
+                    session.sendMessage(new TextMessage(Message));
                 } catch (Exception e) {
-                    System.err.println("Failed to send message to session: " + e.getMessage());
+                    throw new WebSocketException(MessageConstant.WEBSOCKET_ERROR);
                 }
             }
         }

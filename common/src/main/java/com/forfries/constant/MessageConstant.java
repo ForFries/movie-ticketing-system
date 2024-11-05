@@ -37,7 +37,7 @@ public class MessageConstant {
     public static final String SEAT_IN_MAINTENANCE = "座位正在维修！请重新选座";
 
 
-//  public static final String
+  public static final String WEBSOCKET_ERROR = "WebSocket错误，请联系管理员";
 //  public static final String
 //  public static final String
 //  public static final String
