@@ -13,6 +13,7 @@ import com.forfries.result.Result;
 import com.forfries.service.ScheduleService;
 import com.forfries.service.TicketOrderService;
 import com.forfries.service.TicketService;
+import com.forfries.service.WebSocketService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,9 +26,12 @@ public class AdminTicketOrderController {
 
     @Autowired
     private TicketOrderService ticketOrderService;
+
     @Autowired
     private ScheduleService scheduleService;
 
+    @Autowired
+    private WebSocketService webSocketService;
     @GetMapping
     public Result<PageResult> pageTicketOrders(TicketOrderPageDTO ticketOrderPageDTO) {
 

@@ -15,10 +15,12 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 public class WebSocketConfig implements WebSocketConfigurer {
     @Autowired
     private JwtHandshakeInterceptor jwtHandshakeInterceptor;
+    @Autowired
+    private WebSocketHandler webSocketHandler;
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(new WebSocketHandler(), "/ws")
+        registry.addHandler(webSocketHandler, "/ws")
                 .addInterceptors(jwtHandshakeInterceptor)
                 .setAllowedOrigins("*");
 
