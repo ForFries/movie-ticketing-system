@@ -36,13 +36,12 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
         HttpServletRequest request = ((ServletServerHttpRequest) serverRequest).getServletRequest();
         try {
             String token = request.getHeader(jwtProperties.getAdminTokenName());
-            log.info("token : {}", token);
+            log.info("[WebSocket]token : {}", token);
             Map<String, Claim> payload = JwtUtil.decodeJWT(
                     jwtProperties.getAdminSecretKey(),
                     token);
-            log.info("token : {}", payload);
+            log.info("[WebSocket]token : {}", payload);
 
-            Map<String,String> map = new HashMap<>();
             String payloadRole = payload.get("role").asString();
             String payloadUserId = payload.get("userId").asString();
             String payloadCinemaId = payload.get("cinemaId").asString();
@@ -58,11 +57,10 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
                     &&!payloadCinemaId.equals(cinemaId))
                 throw new PermissionErrorException(MessageConstant.PERMISSION_ERROR_ID);
 
-            map.put("role",payloadRole);
-            map.put("userId",payloadUserId);
-            map.put("cinemaId",cinemaId);
+            attributes.put("userId", payloadUserId);
+            attributes.put("cinemaId", cinemaId);
+            attributes.put("role", payloadRole);
 
-            BaseContext.setCurrentPayload(map);
             return true;
         } catch (Exception e) {
             log.error("JWT validation failed: {}", e.getMessage());
