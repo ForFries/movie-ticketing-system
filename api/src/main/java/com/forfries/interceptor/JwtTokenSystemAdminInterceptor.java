@@ -60,8 +60,6 @@ public class JwtTokenSystemAdminInterceptor implements HandlerInterceptor {
         String payloadUser = payload.get("userId").asString();
         String payloadCinemaId = payload.get("cinemaId").asString();
         String cinemaId = request.getParameter("cinemaId");
-        if(cinemaId == null || cinemaId.isEmpty())
-            throw new PermissionErrorException(MessageConstant.PERMISSION_ERROR_NULL);
 
         if(!payloadRole.equals(RoleConstant.ROLE_SYSTEM_ADMIN))
             throw new PermissionErrorException(MessageConstant.PERMISSION_ERROR);

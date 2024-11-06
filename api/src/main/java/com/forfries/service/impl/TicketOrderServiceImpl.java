@@ -23,6 +23,8 @@ import com.forfries.mapper.TicketOrderMapper;
 import com.forfries.service.*;
 import com.forfries.vo.ScheduleSeatVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,6 +74,7 @@ public class TicketOrderServiceImpl extends PageableWithCheckServiceImpl<TicketO
         int randomNum = 1000 + random.nextInt(9000);
         return timestamp + randomNum;
     }
+
     @Override
     protected void buildQueryWrapper(QueryWrapper<TicketOrder> queryWrapper, TicketOrderPageDTO ticketOrderPageDTO) {
         String orderNum = ticketOrderPageDTO.getOrderNum();
@@ -191,6 +194,7 @@ public class TicketOrderServiceImpl extends PageableWithCheckServiceImpl<TicketO
             throw new SeatOccupiedException(MessageConstant.SEAT_OCCUPIED);
     }
 
+    @Cacheable(cacheNames = "scheduleSeats",key = "#scheduleId")
     @Override
     public ScheduleSeatVO getScheduleSeats(Long scheduleId) {
         //TODO 这个数据经常被访问，最好放在Redis中
@@ -263,12 +267,15 @@ public class TicketOrderServiceImpl extends PageableWithCheckServiceImpl<TicketO
         return getOne(queryWrapper);
     }
 
+
     @Override
     public void cancelTicketOrderWithUserCheck(long id) {
         //TODO 这里要加上管理员审核
-        if(getByIdWithUserCheck(id)!=null)
+        TicketOrder ticketOrder = getByIdWithUserCheck(id);
+        if(ticketOrder!=null)
             cancelTicketOrder(id);
     }
+
 
     private boolean cancelTicketOrder(long id) {
         return updateTicketOrderStatus(id,StatusConstant.CANCELED, StatusConstant.NOT_AVAILABLE);

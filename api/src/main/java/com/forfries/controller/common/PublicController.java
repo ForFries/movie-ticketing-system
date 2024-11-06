@@ -7,6 +7,7 @@ import com.forfries.dto.CinemaPageDTO;
 import com.forfries.dto.CommentPageDTO;
 import com.forfries.dto.MoviePageDTO;
 import com.forfries.dto.SchedulePageDTO;
+import com.forfries.entity.Movie;
 import com.forfries.entity.Ticket;
 import com.forfries.result.PageResult;
 import com.forfries.result.Result;
@@ -67,5 +68,18 @@ public class PublicController {
                 .build();
         commentPageDTO.setStatus(NormalStatusConstant.NORMAL_STATUS);
         return Result.success(commentService.page(commentPageDTO));
+    }
+
+    @GetMapping("/movies/{id}")
+    Result<?> getMovieById(@PathVariable Long id) {
+        return Result.success(movieService.getById(id));
+    }
+    @GetMapping("/cinemas/{id}")
+    Result<?> getCinemaById(@PathVariable Long id) {
+        return Result.success(cinemaService.getById(id));
+    }
+    @GetMapping("/schedules/{id}")
+    Result<?> getScheduleById(@PathVariable Long id) {
+        return Result.success(scheduleService.getById(id));
     }
 }

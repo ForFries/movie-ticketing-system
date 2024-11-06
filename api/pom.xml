@@ -10,6 +10,8 @@
     </parent>
 
     <artifactId>api</artifactId>
+    <version>1.0.1</version>
+
 
     <build>
         <plugins>
@@ -84,6 +86,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
     </dependencies>
 </project>

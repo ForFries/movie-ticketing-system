@@ -4,10 +4,11 @@ import com.forfries.entity.Seat;
 import lombok.Builder;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 @Data
 @Builder
-public class ScheduleSeatVO {
+public class ScheduleSeatVO implements Serializable {
 
     private long movieId;
     private String movieTitle;

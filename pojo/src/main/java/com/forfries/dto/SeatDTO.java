@@ -4,10 +4,11 @@ package com.forfries.dto;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Data
-public class SeatDTO {
+public class SeatDTO implements Serializable {
     private long screeningHallId;
     private long colCount;
     private long rowCount;
