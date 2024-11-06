@@ -6,7 +6,7 @@
 
 **前端**：Vue3 + [Element-Plus](https://element-plus.org/zh-CN/component/overview.html) + Axios
 
-**后端**：SpringBoot3 + Mybatis-plus + MySQL
+**后端**：SpringBoot3 + Mybatis-plus + MySQL + WebSocket + Redis
 
 文件管理：阿里云OSS
 
