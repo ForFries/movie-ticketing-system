@@ -7,6 +7,6 @@ import java.util.List;
 
 @Data
 public class TicketOrderGenerationDTO implements Serializable {
-    private long scheduleId;
+    private Long scheduleId;
     private List<Long> seatIds;
 }

@@ -35,7 +35,9 @@ public class AdminScheduleController {
 
     @GetMapping
     public Result<PageResult> pageSchedules(SchedulePageDTO schedulePageDTO) {
-        screeningHallService.check(schedulePageDTO.getScreeningHallId());
+        //TODO这里是否需要存在有存疑，后续梳理
+        if(schedulePageDTO.getScreeningHallId() != null)
+            screeningHallService.check(schedulePageDTO.getScreeningHallId());
         PageResult pageResult = scheduleService.page(schedulePageDTO);
         return Result.success(pageResult);
     }

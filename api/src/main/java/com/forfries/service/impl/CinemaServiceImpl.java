@@ -24,7 +24,7 @@ public class CinemaServiceImpl extends PageableServiceImpl<CinemaMapper, Cinema,
     @Override
     protected void buildQueryWrapper(QueryWrapper<Cinema> queryWrapper, CinemaPageDTO cinemaPageDTO) {
         if (cinemaPageDTO.getName() != null && !cinemaPageDTO.getName().isEmpty()) {
-            queryWrapper.like("title", cinemaPageDTO.getName());
+            queryWrapper.like("name", cinemaPageDTO.getName());
         }
         // 可以添加更多的查询条件
         queryWrapper.orderByDesc("updated_at");

@@ -91,7 +91,9 @@ public class ScheduleServiceImpl extends PageableWithCheckServiceImpl<ScheduleMa
                         .between("end_time", newStartTime, newEndTime)
                         .or()
                         .le("start_time", newStartTime).ge("end_time", newEndTime));
-
+        if (newSchedule.getId() != null) {
+            queryWrapper.ne("id", newSchedule.getId());
+        }
         List<Schedule> conflictingSchedules = list(queryWrapper);
 
         return !conflictingSchedules.isEmpty();

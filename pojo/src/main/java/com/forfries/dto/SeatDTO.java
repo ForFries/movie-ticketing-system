@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 public class SeatDTO implements Serializable {
-    private long screeningHallId;
+    private Long screeningHallId;
     private long colCount;
     private long rowCount;
     private List<SeatCoordinate> seatCoordinates;

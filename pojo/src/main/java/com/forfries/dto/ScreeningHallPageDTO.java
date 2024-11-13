@@ -6,6 +6,6 @@ import java.io.Serializable;
 
 @Data
 public class ScreeningHallPageDTO extends PageDTO implements Serializable {
-    private Integer cinemaId;
+    private Long cinemaId;
     private String name;
 }
