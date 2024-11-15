@@ -55,7 +55,7 @@ public class PublicController {
         return Result.success(scheduleService.page(schedulePageDTO));
     }
 
-   @GetMapping("/schedule/{scheduleId}/seats")
+   @GetMapping("/schedules/{scheduleId}/seats")
     Result<ScheduleSeatVO> getScheduleSeats(@PathVariable Long scheduleId) {
 
        return Result.success(ticketOrderService.getScheduleSeats(scheduleId));

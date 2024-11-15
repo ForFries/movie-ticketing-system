@@ -55,7 +55,7 @@ public class StatusConstant {
 
     //评论状态
     //待审核
-    public static final String PENDING_REVIEW = "15";
+    public static final String PENDING_REVIEW = "17";
 
     //审核通过
     public static final String PASSED = "16";

@@ -20,10 +20,9 @@ public class AdminUsersController {
     @PostMapping
     public Result allocateCinemaAdminAccount(@RequestParam String username,
                                              @RequestParam String password,
-                                             @RequestParam Long cinemaId){
-        userService.register(username,password, RoleConstant.ROLE_CINEMA_ADMIN,cinemaId);
+                                             @RequestParam Long cinemaId) {
+        userService.register(username, password, RoleConstant.ROLE_CINEMA_ADMIN, cinemaId);
         return Result.success();
     }
-
 
 }

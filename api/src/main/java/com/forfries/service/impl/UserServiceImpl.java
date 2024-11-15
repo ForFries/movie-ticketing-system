@@ -61,9 +61,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                 jwtProperties.getAdminTtl();
 
         Map<String,Object> claims = new HashMap<>();
-        claims.put("userId", user.getId());
+        claims.put("userId", String.valueOf(user.getId()));
         claims.put("role", user.getRole());
-        claims.put("cinemaId", user.getCinemaId());
+        claims.put("cinemaId", String.valueOf(user.getCinemaId()));
 
         return JwtUtil.createJWT(secretKey,ttl,claims);
     }

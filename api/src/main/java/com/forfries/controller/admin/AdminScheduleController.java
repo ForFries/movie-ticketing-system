@@ -85,7 +85,7 @@ public class AdminScheduleController {
 
     @GetMapping("/{scheduleId}/seats")
     Result<ScheduleSeatVO> getScheduleSeats(@PathVariable Long scheduleId) {
-        screeningHallService.check(scheduleId);
+        scheduleService.check(scheduleId);
 
         return Result.success(ticketOrderService.getScheduleSeats(scheduleId));
     }

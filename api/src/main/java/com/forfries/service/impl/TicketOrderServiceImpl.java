@@ -194,7 +194,7 @@ public class TicketOrderServiceImpl extends PageableWithCheckServiceImpl<TicketO
             throw new SeatOccupiedException(MessageConstant.SEAT_OCCUPIED);
     }
 
-    @Cacheable(cacheNames = "scheduleSeats",key = "#scheduleId")
+//    @Cacheable(cacheNames = "scheduleSeats",key = "#scheduleId")
     @Override
     public ScheduleSeatVO getScheduleSeats(Long scheduleId) {
         //TODO 这个数据经常被访问，最好放在Redis中

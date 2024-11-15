@@ -38,7 +38,7 @@ public class CinemaIdCheckAspect {
         Map<String, String> payload = BaseContext.getCurrentPayload();
 
         // 获取当前管理员的 cinemaId
-        String adminCinemaId = payload.get("cinemaId");
+        Long adminCinemaId = Long.parseLong(payload.get("cinemaId"));
 
         // 获取方法参数
         Object[] args = joinPoint.getArgs();
@@ -73,7 +73,7 @@ public class CinemaIdCheckAspect {
         return joinPoint.proceed();
     }
 
-    private boolean checkCinemaId(BaseMapper<Object> mapper, Long id, String adminCinemaId) {
+    private boolean checkCinemaId(BaseMapper<Object> mapper, Long id, Long adminCinemaId) {
         // 使用 Mapper 进行查询
         QueryWrapper<Object> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("id", id).eq("cinema_id", adminCinemaId);

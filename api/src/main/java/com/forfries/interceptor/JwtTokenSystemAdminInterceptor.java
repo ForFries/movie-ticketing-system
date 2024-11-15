@@ -57,7 +57,7 @@ public class JwtTokenSystemAdminInterceptor implements HandlerInterceptor {
 
         Map<String,String> map = new HashMap<>();
         String payloadRole = payload.get("role").asString();
-        String payloadUser = payload.get("userId").asString();
+        String payloadUserId = payload.get("userId").asString();
         String payloadCinemaId = payload.get("cinemaId").asString();
         String cinemaId = request.getParameter("cinemaId");
 
@@ -65,7 +65,7 @@ public class JwtTokenSystemAdminInterceptor implements HandlerInterceptor {
             throw new PermissionErrorException(MessageConstant.PERMISSION_ERROR);
 
         map.put("role",payloadRole);
-        map.put("user",payloadUser);
+        map.put("user",payloadUserId);
         map.put("cinemaId",cinemaId);
 
         BaseContext.setCurrentPayload(map);

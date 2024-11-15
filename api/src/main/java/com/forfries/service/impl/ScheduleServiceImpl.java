@@ -34,27 +34,35 @@ public class ScheduleServiceImpl extends PageableWithCheckServiceImpl<ScheduleMa
     @Override
     protected void buildQueryWrapper(QueryWrapper<Schedule> queryWrapper, SchedulePageDTO schedulePageDTO) {
         Long movieId = schedulePageDTO.getMovieId();
-        if (movieId != null ) {
+        if (movieId != null) {
             queryWrapper.eq("movie_id", movieId);
         }
+
         Long screeningHallId = schedulePageDTO.getScreeningHallId();
-        if (screeningHallId != null ) {
+        if (screeningHallId != null) {
             queryWrapper.eq("screening_hall_id", screeningHallId);
         }
 
+        queryWrapper.eq("cinema_id", schedulePageDTO.getCinemaId());
+
         LocalDate date = schedulePageDTO.getDate();
-        if (date != null ) {
+        if (date != null) {
+            // 当天的开始时间和结束时间
             LocalDateTime startOfDay = date.atStartOfDay();
             LocalDateTime endOfDay = date.atTime(23, 59, 59, 999_999_999);
-            //TODO 这里可能会出逻辑bug 对于查询某个日期的。。。
-            queryWrapper.between("start_time", startOfDay, endOfDay)
+
+            // 创建一个新的查询条件组，用于时间过滤
+            queryWrapper.and(wrapper -> wrapper
+                    .between("start_time", startOfDay, endOfDay)
                     .or()
                     .between("end_time", startOfDay, endOfDay)
                     .or()
-                    .le("start_time", startOfDay).ge("end_time", endOfDay);
-
+                    .le("start_time", startOfDay)
+                    .ge("end_time", endOfDay)
+            );
         }
-        queryWrapper.eq("cinema_id", schedulePageDTO.getCinemaId());
+
+
         // 可以添加更多的查询条件
         queryWrapper.orderByDesc("updated_at");
     }
