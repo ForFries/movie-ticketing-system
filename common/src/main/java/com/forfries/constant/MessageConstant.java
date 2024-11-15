@@ -38,8 +38,11 @@ public class MessageConstant {
 
 
   public static final String WEBSOCKET_ERROR = "WebSocket错误，请联系管理员";
-//  public static final String
-//  public static final String
+
+  public static final String PAGE_WRONG = "页码出错！";
+  public static final String PAGE_SIZE_WRONG = "每页大小出错！";
+  public static final String PAGE_EXCEPTION = "请检查是否携带page和pageSize参数！";
+  //  public static final String
 //  public static final String
 //  public static final String
 //  public static final String

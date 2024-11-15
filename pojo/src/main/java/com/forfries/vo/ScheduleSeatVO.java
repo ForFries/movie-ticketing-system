@@ -25,6 +25,8 @@ public class ScheduleSeatVO implements Serializable {
     private long rowCount;
     private long colCount;
 
+    private String ticketPrice;
+
     private List<Seat> seats;
 
 }

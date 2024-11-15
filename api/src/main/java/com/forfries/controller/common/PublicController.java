@@ -62,10 +62,9 @@ public class PublicController {
    }
 
     @GetMapping("/movies/{id}/comments")
-    Result<PageResult> pageComments(@PathVariable Long id) {
-        CommentPageDTO commentPageDTO = CommentPageDTO.builder()
-                .movieId(id)
-                .build();
+    Result<PageResult> pageComments(@PathVariable Long id,
+            CommentPageDTO commentPageDTO){
+        commentPageDTO.setMovieId(id);
         commentPageDTO.setStatus(NormalStatusConstant.NORMAL_STATUS);
         return Result.success(commentService.page(commentPageDTO));
     }

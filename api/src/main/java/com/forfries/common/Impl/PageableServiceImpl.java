@@ -6,7 +6,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.forfries.constant.MessageConstant;
 import com.forfries.dto.PageDTO;
+import com.forfries.exception.PageException;
 import com.forfries.result.PageResult;
 import com.forfries.common.PageableService;
 
@@ -18,8 +20,17 @@ public abstract class PageableServiceImpl<M extends BaseMapper<T>, T,D extends P
 
     // 通用的分页查询方法
     public PageResult page(D pageDTO) {
+
+        if(pageDTO.getPage()==null || pageDTO.getPageSize() == null){
+            throw new PageException(MessageConstant.PAGE_EXCEPTION);
+        }
+
         int currentPage = Integer.parseInt(pageDTO.getPage());
         int pageSize = Integer.parseInt(pageDTO.getPageSize());
+
+        if(currentPage < 1 || currentPage > pageSize) {
+            throw new PageException(MessageConstant.PAGE_WRONG);
+        }
 
         Page<T> page = new Page<>(currentPage, pageSize);
         QueryWrapper<T> queryWrapper = new QueryWrapper<>();

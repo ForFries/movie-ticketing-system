@@ -246,6 +246,7 @@ public class TicketOrderServiceImpl extends PageableWithCheckServiceImpl<TicketO
                 .scheduleInfo(schedule.getCreatedAt().toString())
                 .colCount(colNum)
                 .rowCount(rowNum)
+                .ticketPrice(schedule.getTicketPrice().toString())
                 .seats(seats)
                 .build();
 

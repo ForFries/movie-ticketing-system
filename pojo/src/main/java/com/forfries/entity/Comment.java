@@ -21,6 +21,8 @@ public class Comment implements Serializable {
 
     private String content;
 
+    private String status;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;

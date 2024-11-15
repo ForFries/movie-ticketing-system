@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/api/admin/comments")
+@RequestMapping("/api/user/comments")
 @Slf4j
 public class UserCommentController {
 
@@ -44,6 +44,8 @@ public class UserCommentController {
 
     @PostMapping
     public Result<?> addComment(@RequestBody Comment comment) {
+        //TODO 这里添加检测
+        comment.setStatus(StatusConstant.NORMAL);
         comment.setUserId(Long.parseLong(BaseContext.getCurrentPayload().get("userId")));
         commentService.save(comment);
         return Result.success();
