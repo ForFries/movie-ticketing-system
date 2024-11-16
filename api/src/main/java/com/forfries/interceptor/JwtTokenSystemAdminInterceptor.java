@@ -46,6 +46,18 @@ public class JwtTokenSystemAdminInterceptor implements HandlerInterceptor {
             //当前拦截到的不是动态方法，直接放行
             return true;
         }
+        boolean isNeedSystemAdmin = false;
+        String method = request.getMethod();
+        if("DELETE".equals(method)
+        || "PUT".equals(method)
+        || "POST".equals(method))
+            isNeedSystemAdmin = true;
+
+        //判断当前拦截到的是Controller的方法还是其他资源
+        if (!(handler instanceof HandlerMethod)) {
+            //当前拦截到的不是动态方法，直接放行
+            return true;
+        }
 
         //1、从请求头中获取令牌
         String token = request.getHeader(jwtProperties.getAdminTokenName());
@@ -59,14 +71,16 @@ public class JwtTokenSystemAdminInterceptor implements HandlerInterceptor {
         String payloadRole = payload.get("role").asString();
         String payloadUserId = payload.get("userId").asString();
         String payloadCinemaId = payload.get("cinemaId").asString();
-        String cinemaId = request.getParameter("cinemaId");
 
-        if(!payloadRole.equals(RoleConstant.ROLE_SYSTEM_ADMIN))
+        if(payloadRole.equals(RoleConstant.ROLE_USER))
+            throw new PermissionErrorException(MessageConstant.PERMISSION_ERROR);
+
+        if(isNeedSystemAdmin && payloadRole.equals(RoleConstant.ROLE_CINEMA_ADMIN))
             throw new PermissionErrorException(MessageConstant.PERMISSION_ERROR);
 
         map.put("role",payloadRole);
-        map.put("user",payloadUserId);
-        map.put("cinemaId",cinemaId);
+        map.put("userId",payloadUserId);
+        map.put("cinemaId",payloadCinemaId);
 
         BaseContext.setCurrentPayload(map);
 
