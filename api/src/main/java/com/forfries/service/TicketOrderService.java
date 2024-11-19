@@ -5,6 +5,7 @@ import com.forfries.dto.TicketOrderGenerationDTO;
 import com.forfries.dto.TicketOrderPageDTO;
 import com.forfries.entity.TicketOrder;
 import com.forfries.vo.ScheduleSeatVO;
+import com.forfries.vo.TicketOrderConfirmVO;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
 */
 public interface TicketOrderService extends PageableWithCheckService<TicketOrder, TicketOrderPageDTO> {
 
-    boolean createTicketOrder(TicketOrderGenerationDTO ticketOrderGenerationDTO);
+    TicketOrder createTicketOrder(TicketOrderGenerationDTO ticketOrderGenerationDTO);
 
     void checkSeatOccupied(List<Long> seatIds, Long scheduleId);
 

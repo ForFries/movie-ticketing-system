@@ -1,14 +1,15 @@
 package com.forfries.controller.admin;
 
 import com.forfries.constant.RoleConstant;
+import com.forfries.dto.RegisterDTO;
+import com.forfries.dto.TicketOrderPageDTO;
+import com.forfries.dto.UserPageDTO;
+import com.forfries.result.PageResult;
 import com.forfries.result.Result;
 import com.forfries.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Slf4j
@@ -18,11 +19,24 @@ public class AdminUsersController {
     private UserService userService;
 
     @PostMapping
-    public Result allocateCinemaAdminAccount(@RequestParam String username,
-                                             @RequestParam String password,
-                                             @RequestParam Long cinemaId) {
-        userService.register(username, password, RoleConstant.ROLE_CINEMA_ADMIN, cinemaId);
+    public Result<?> allocateCinemaAdminAccount(@RequestParam Long cinemaId,
+                                             @RequestBody RegisterDTO registerDTO) {
+        userService.register(registerDTO.getUsername(),
+                registerDTO.getPassword(),
+                RoleConstant.ROLE_CINEMA_ADMIN, cinemaId);
         return Result.success();
     }
 
+    @DeleteMapping("/{id}")
+    public Result<?> deleteCinemaAdminAccount(@PathVariable Long id){
+        userService.removeById(id);
+        return Result.success();
+    }
+
+    @GetMapping
+    public Result<PageResult> pageUsers(UserPageDTO userPageDTO) {
+
+        PageResult pageResult = userService.page(userPageDTO);
+        return Result.success(pageResult);
+    }
 }

@@ -30,13 +30,16 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
         log.info("开始注册系统管理员拦截器...");
         registry.addInterceptor(jwtTokenSystemAdminInterceptor)
                 .addPathPatterns("/api/admin/movies/**")
-                .addPathPatterns("/api/admin/cinemas/**");
+                .addPathPatterns("/api/admin/cinemas/**")
+                .addPathPatterns("/api/admin/users/**");
+
 
         log.info("开始注册影院管理员拦截器...");
         registry.addInterceptor(jwtTokenCinemaAdminInterceptor)
                 .addPathPatterns("/api/admin/**")
                 .excludePathPatterns("/api/admin/movies/**")
-                .excludePathPatterns("/api/admin/cinemas/**");
+                .excludePathPatterns("/api/admin/cinemas/**")
+                .excludePathPatterns("/api/admin/users/**");
 
         log.info("开始注册用户拦截器...");
         registry.addInterceptor(jwtTokenUserInterceptor)

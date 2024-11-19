@@ -2,9 +2,11 @@ package com.forfries.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.forfries.common.Impl.PageableServiceImpl;
 import com.forfries.constant.MessageConstant;
 import com.forfries.constant.RoleConstant;
 import com.forfries.constant.StatusConstant;
+import com.forfries.dto.UserPageDTO;
 import com.forfries.entity.User;
 import com.forfries.exception.AccountNotFoundException;
 import com.forfries.exception.PasswordErrorException;
@@ -27,7 +29,7 @@ import java.util.Optional;
 * @createDate 2024-10-29 13:57:38
 */
 @Service
-public class UserServiceImpl extends ServiceImpl<UserMapper, User>
+public class UserServiceImpl extends PageableServiceImpl<UserMapper,User,UserPageDTO>
     implements UserService{
 
     @Autowired
@@ -35,6 +37,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     @Autowired
     private JwtProperties jwtProperties;
+
+    @Override
+    protected void buildQueryWrapper(QueryWrapper<User> queryWrapper, UserPageDTO userPageDTO) {
+        if(userPageDTO.getCinemaId()!=null){
+            queryWrapper.eq("cinema_id", userPageDTO.getCinemaId());
+        }
+        String role = userPageDTO.getRole();
+
+        if(role !=null && !role.isEmpty()){
+            queryWrapper.in("role", userPageDTO.getRole());
+        }
+        queryWrapper.orderByDesc("updated_at");
+    }
+
 
     @Override
     public String createToken(String username, String password) {

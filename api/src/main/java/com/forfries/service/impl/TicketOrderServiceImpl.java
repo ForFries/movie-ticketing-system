@@ -2,7 +2,6 @@ package com.forfries.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.fasterxml.jackson.databind.ser.Serializers;
 import com.forfries.annotation.CinemaIdCheck;
 import com.forfries.common.Impl.PageableWithCheckServiceImpl;
 import com.forfries.constant.MessageConstant;
@@ -22,11 +21,10 @@ import com.forfries.exception.SystemException;
 import com.forfries.mapper.TicketOrderMapper;
 import com.forfries.service.*;
 import com.forfries.vo.ScheduleSeatVO;
+import com.forfries.vo.TicketOrderConfirmVO;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -86,21 +84,24 @@ public class TicketOrderServiceImpl extends PageableWithCheckServiceImpl<TicketO
             queryWrapper.eq("schedule_id", scheduleId);
         }
         Long userId = ticketOrderPageDTO.getUserId();
-        if (userId != null ) {
-            queryWrapper.eq("user_id", userId);
-        }
+
 
         //这里要区分管理员和用户
         if(BaseContext.getCurrentPayload().get("role").equals(RoleConstant.ROLE_USER))
             queryWrapper.eq("user_id", BaseContext.getCurrentPayload().get("userId"));
-        else
+        else{
+            if (userId != null ) {
+                queryWrapper.eq("user_id", userId);
+            }
             queryWrapper.eq("cinema_id", ticketOrderPageDTO.getCinemaId());
+        }
+
         // 可以添加更多的查询条件
         queryWrapper.orderByDesc("updated_at");
     }
 
     @Override
-    public boolean createTicketOrder(TicketOrderGenerationDTO ticketOrderGenerationDTO) {
+    public TicketOrder createTicketOrder(TicketOrderGenerationDTO ticketOrderGenerationDTO) {
         //管理员添加订单，这里的userId为管理员
         //TODO 管理员当然不用考虑锁的事情，但是用户需要
 
@@ -116,6 +117,8 @@ public class TicketOrderServiceImpl extends PageableWithCheckServiceImpl<TicketO
         //获取schedule
         Schedule schedule = scheduleService.getById(ticketOrderGenerationDTO.getScheduleId());
 
+        ScheduleSeatVO scheduleSeatVO = this.getScheduleSeats(ticketOrderGenerationDTO.getScheduleId());
+
         //查询座位是否与ScreeningHallId一致
         this.checkSeatBelong(seatIds,schedule.getScreeningHallId());
 
@@ -126,16 +129,20 @@ public class TicketOrderServiceImpl extends PageableWithCheckServiceImpl<TicketO
         //上面全部通过后开始创建订单
         int ticketCount = seatIds.size();
         //设置状态
-        //TODO 这里可能要设置不同的状态哦 目前是只要创建订单 订单就为Normal 票为Available
+        //TODO 这里可能要设置不同的状态哦 目前是只要创建订单 订单就为PAID 票为Available
 
         BigDecimal price4One = schedule.getTicketPrice();
+
         TicketOrder ticketOrder = TicketOrder.builder()
                 .userId(userId)
-                .cinemaId(schedule.getCinemaId())
                 .orderNum(generateOrderNumber())
+                .seatInfo(this.getSeatInfo(seatIds))
                 .totalPrice(price4One.multiply(BigDecimal.valueOf(ticketCount)))
-                .status(StatusConstant.NORMAL)
+                .status(StatusConstant.PAID)//TODO 这里后续要改为未支付
                 .build();
+        BeanUtils.copyProperties(scheduleSeatVO, ticketOrder);
+        //TODO 这一条后续优化
+        ticketOrder.setMovieImageUrl(movieService.getById(ticketOrder.getMovieId()).getImageUrl());
 
         this.save(ticketOrder);
 
@@ -157,9 +164,23 @@ public class TicketOrderServiceImpl extends PageableWithCheckServiceImpl<TicketO
         }
 
         ticketService.saveBatch(tickets);
+        TicketOrderConfirmVO ticketOrderVO = new TicketOrderConfirmVO();
 
-        return true;
+        return ticketOrder;
     }
+
+    private String getSeatInfo(List<Long> seatIds) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Long seatId : seatIds) {
+            Seat seat = seatService.getById(seatId);
+            stringBuilder.append(seat.getRowNum())
+                    .append("排")
+                    .append(seat.getColNum())
+                    .append("座 ");
+        }
+        return stringBuilder.toString();
+    }
+
 
     private void checkSeatBelong(List<Long> seatIds, Long screeningHallId) {
 
@@ -243,7 +264,7 @@ public class TicketOrderServiceImpl extends PageableWithCheckServiceImpl<TicketO
                 .screeningHallId(screeningHallId)
                 .screeningHallName(screeningHallService.getById(screeningHallId).getName())
                 .scheduleId(scheduleId)
-                .scheduleInfo(schedule.getCreatedAt().toString())
+                .scheduleInfo(this.getScheduleInfo(schedule))
                 .colCount(colNum)
                 .rowCount(rowNum)
                 .ticketPrice(schedule.getTicketPrice().toString())
@@ -251,6 +272,15 @@ public class TicketOrderServiceImpl extends PageableWithCheckServiceImpl<TicketO
                 .build();
 
         return scheduleSeatVO;
+    }
+
+    private String getScheduleInfo(Schedule schedule) {
+        StringBuilder scheduleInfo = new StringBuilder();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        scheduleInfo.append(schedule.getStartTime().format(dateTimeFormatter))
+                .append("~")
+                .append(schedule.getEndTime().format(dateTimeFormatter));
+        return scheduleInfo.toString();
     }
 
     @Override

@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+
 @RestController
 @Slf4j
 @RequestMapping("/api/admin/seats")
@@ -54,11 +56,10 @@ public class AdminSeatController {
     }
 
     @PostMapping("/{id}")
-    public Result<?> updateSeatStatus(@PathVariable Long id, @RequestParam String status) {
+    public Result<?> updateSeatStatus(@PathVariable Long id, @RequestParam String cinemaId,@RequestBody HashMap<String,String> status) {
         //检查seatId对应的screeningHall是否属于本管理员
         screeningHallService.check(seatService.getById(id).getScreeningHallId());
-
-        seatService.update(id,status);
+        seatService.update(id,status.get("status"));
         return Result.success();
     }
 }

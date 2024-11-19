@@ -43,8 +43,7 @@ public class UserTicketOrderController {
     @PostMapping
     public Result<?> createTicketOrder(@RequestBody TicketOrderGenerationDTO ticketOrderGenerationDTO) {
 
-        ticketOrderService.createTicketOrder(ticketOrderGenerationDTO);
-        return Result.success();
+        return Result.success(ticketOrderService.createTicketOrder(ticketOrderGenerationDTO));
     }
 
 

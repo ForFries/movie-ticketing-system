@@ -1,22 +1,17 @@
-package com.forfries.entity;
+package com.forfries.vo;
 
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.forfries.entity.Seat;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Builder;
-import lombok.Data;
 
-/**
- * @TableName ticket_order
- */
-@TableName(value ="ticket_order")
 @Data
-@Builder
-public class TicketOrder implements Serializable {
+public class TicketOrderConfirmVO implements Serializable {
     private Long id;
 
     private Long userId;
@@ -43,6 +38,4 @@ public class TicketOrder implements Serializable {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
-
-    private static final long serialVersionUID = 1L;
 }
