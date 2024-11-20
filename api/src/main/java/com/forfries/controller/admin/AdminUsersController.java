@@ -2,11 +2,10 @@ package com.forfries.controller.admin;
 
 import com.forfries.constant.RoleConstant;
 import com.forfries.dto.RegisterDTO;
-import com.forfries.dto.TicketOrderPageDTO;
 import com.forfries.dto.UserPageDTO;
 import com.forfries.result.PageResult;
 import com.forfries.result.Result;
-import com.forfries.service.UserService;
+import com.forfries.service.common.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

@@ -7,10 +7,9 @@ import com.forfries.dto.TicketOrderPageDTO;
 import com.forfries.entity.TicketOrder;
 import com.forfries.result.PageResult;
 import com.forfries.result.Result;
-import com.forfries.service.ScheduleService;
-import com.forfries.service.TicketOrderService;
-import com.forfries.service.WebSocketService;
-import com.forfries.vo.TicketOrderConfirmVO;
+import com.forfries.service.common.ScheduleService;
+import com.forfries.service.common.TicketOrderService;
+import com.forfries.service.webscket.AdminWebSocketService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +27,7 @@ public class AdminTicketOrderController {
     private ScheduleService scheduleService;
 
     @Autowired
-    private WebSocketService webSocketService;
+    private AdminWebSocketService adminWebSocketService;
 
     @GetMapping
     public Result<PageResult> pageTicketOrders(TicketOrderPageDTO ticketOrderPageDTO) {

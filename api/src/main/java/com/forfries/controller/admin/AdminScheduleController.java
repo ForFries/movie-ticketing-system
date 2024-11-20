@@ -6,17 +6,15 @@ import com.forfries.constant.MessageConstant;
 import com.forfries.dto.SchedulePageDTO;
 import com.forfries.entity.Schedule;
 import com.forfries.exception.InconsistentIDException;
-import com.forfries.mapper.ScheduleMapper;
 import com.forfries.result.PageResult;
 import com.forfries.result.Result;
-import com.forfries.service.ScheduleService;
-import com.forfries.service.ScreeningHallService;
-import com.forfries.service.TicketOrderService;
+import com.forfries.service.common.ScheduleService;
+import com.forfries.service.common.ScreeningHallService;
+import com.forfries.service.common.TicketOrderService;
 import com.forfries.vo.ScheduleSeatVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.yaml.snakeyaml.events.Event;
 
 
 @RestController

@@ -9,7 +9,7 @@ import com.forfries.entity.ScreeningHall;
 import com.forfries.exception.InconsistentIDException;
 import com.forfries.result.PageResult;
 import com.forfries.result.Result;
-import com.forfries.service.ScreeningHallService;
+import com.forfries.service.common.ScreeningHallService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

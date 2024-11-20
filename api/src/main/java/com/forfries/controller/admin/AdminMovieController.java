@@ -6,7 +6,7 @@ import com.forfries.entity.Movie;
 import com.forfries.exception.InconsistentIDException;
 import com.forfries.result.PageResult;
 import com.forfries.result.Result;
-import com.forfries.service.MovieService;
+import com.forfries.service.common.MovieService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

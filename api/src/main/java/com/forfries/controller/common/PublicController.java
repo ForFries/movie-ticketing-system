@@ -1,17 +1,13 @@
 package com.forfries.controller.common;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.forfries.constant.NormalStatusConstant;
-import com.forfries.context.BaseContext;
 import com.forfries.dto.CinemaPageDTO;
 import com.forfries.dto.CommentPageDTO;
 import com.forfries.dto.MoviePageDTO;
 import com.forfries.dto.SchedulePageDTO;
-import com.forfries.entity.Movie;
-import com.forfries.entity.Ticket;
 import com.forfries.result.PageResult;
 import com.forfries.result.Result;
-import com.forfries.service.*;
+import com.forfries.service.common.*;
 import com.forfries.vo.ScheduleSeatVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
