@@ -12,7 +12,13 @@ public interface UserService extends PageableService<User, UserPageDTO> {
 
     String createToken(String username, String password);
 
+    String createTokenWithRegister(String openId);
+
+    User register(String openId,String role);
+
     User register(String username, String password,String role);
 
-    User register(String username, String password,String role,Long cinemaId);
+    //全参构造
+    User register(String username, String password,String role,Long cinemaId,String openId);
+
 }

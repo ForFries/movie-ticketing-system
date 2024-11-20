@@ -131,8 +131,18 @@
 
 ### 还未完成的功能
 
-1. 微信登陆
+1. ~~微信登陆~~
+
+   新增了微信登陆，流程如下，在登录界面，可使用微信登录，点击微信登陆时会向后端建立websocket通信，链接是：ws://127.0.0.1:8080/login，这个链接应当存储在类似配置的文件中，如解决跨域问题时的配置，方便修改，当建立连接后，后端会发送一个含有二维码的地址，格式如下：{
+       "data": "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=gQG27zwAAAAAAAAAAS5odHRwOi8vd2VpeGluLnFxLmNvbS9xLzAyZENsWlF2NW1kU0YxOXh5Wk5EY08AAgQJoD1nAwRYAgAA",
+       "type": "qrcode"
+   }，此时需要根据该地址展示出对应的二维码，当用户成功登陆后，后端会发送JWT令牌（通过websocket），格式如下：{
+       "data": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoidXNlciIsImNpbmVtYUlkIjoibnVsbCIsInVzZXJJZCI6IjIwOTE5MTkxNTQ4NzE3IiwiZXhwIjoxNzMyMDk5MTE5fQ.sw7yyZ5tNsWf_AU5KSMjP_AOWZsIGGu61ahtFzGwATk",
+       "type": "jwt"
+   }，此时需要像之前登陆一样，记录下该jwt，用于之后的访问，当收到jwt令牌后，即登录成功，此时可以像使用账户名密码一样正常跳转（分析该jwt然后跳转到对应界面，之前已经实现了该逻辑）
+
 2. 支付系统（下单后转为未支付状态，扫码支付后转为支付状态）
+
 3. ~~评论系统~~
 
 

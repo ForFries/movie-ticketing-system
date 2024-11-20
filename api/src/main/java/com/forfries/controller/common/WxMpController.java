@@ -50,9 +50,9 @@ public class WxMpController {
                        @RequestParam("openid") String openid,
                        @RequestParam(name = "encrypt_type", required = false) String encType,
                        @RequestParam(name = "msg_signature", required = false) String msgSignature) {
-        log.info("\n接收微信请求：[openid=[{}], [signature=[{}], encType=[{}], msgSignature=[{}],"
-                        + " timestamp=[{}], nonce=[{}], requestBody=[\n{}\n] ",
-                openid, signature, encType, msgSignature, timestamp, nonce, requestBody);
+//        log.info("\n接收微信请求：[openid=[{}], [signature=[{}], encType=[{}], msgSignature=[{}],"
+//                        + " timestamp=[{}], nonce=[{}], requestBody=[\n{}\n] ",
+//                openid, signature, encType, msgSignature, timestamp, nonce, requestBody);
 
 
         if (!wxService.checkSignature(timestamp, nonce, signature)) {

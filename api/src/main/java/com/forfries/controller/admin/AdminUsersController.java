@@ -22,7 +22,7 @@ public class AdminUsersController {
                                              @RequestBody RegisterDTO registerDTO) {
         userService.register(registerDTO.getUsername(),
                 registerDTO.getPassword(),
-                RoleConstant.ROLE_CINEMA_ADMIN, cinemaId);
+                RoleConstant.ROLE_CINEMA_ADMIN, cinemaId,null);
         return Result.success();
     }
 

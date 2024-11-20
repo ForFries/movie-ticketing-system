@@ -10,6 +10,7 @@ import com.forfries.entity.User;
 import com.forfries.exception.AccountNotFoundException;
 import com.forfries.exception.PasswordErrorException;
 import com.forfries.exception.SystemException;
+import com.forfries.exception.UsernameRepeatException;
 import com.forfries.properties.JwtProperties;
 import com.forfries.service.common.UserService;
 import com.forfries.mapper.UserMapper;
@@ -82,14 +83,53 @@ public class UserServiceImpl extends PageableServiceImpl<UserMapper,User,UserPag
     }
 
     @Override
-    public User register(String username, String password, String role) {
-        return register(username, password, role, null);
+    public String createTokenWithRegister(String openId) {
+        // 使用 MyBatis-Plus 的条件构造器
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("open_id", openId);
+
+        // 调用 baseMapper 进行查询
+        User user = this.baseMapper.selectOne(queryWrapper);
+        if(user == null){
+            user = register(openId,RoleConstant.ROLE_USER);
+        }
+
+        String secretKey = user.getRole().equals(RoleConstant.ROLE_USER)?
+                jwtProperties.getUserSecretKey():
+                jwtProperties.getAdminSecretKey();
+
+        long ttl = user.getRole().equals(RoleConstant.ROLE_USER)?
+                jwtProperties.getUserTtl():
+                jwtProperties.getAdminTtl();
+
+        Map<String,Object> claims = new HashMap<>();
+        claims.put("userId", String.valueOf(user.getId()));
+        claims.put("role", user.getRole());
+        claims.put("cinemaId", String.valueOf(user.getCinemaId()));
+
+        return JwtUtil.createJWT(secretKey,ttl,claims);
     }
 
     @Override
-    public User register(String username, String password,String role,Long cinemaId) {
-        // 将 DTO 转换为 Entity
+    public User register(String openId, String role) {
+        return register(openId,openId,role,null,openId);
+    }
+
+    @Override
+    public User register(String username, String password, String role) {
+        return register(username, password, role,null,null);
+    }
+
+    @Override
+    public User register(String username, String password,String role,Long cinemaId,String openId) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("username", username);
+        if(this.baseMapper.selectOne(queryWrapper)!=null){
+            throw new UsernameRepeatException(MessageConstant.USERNAME_REPEAT);
+        }
+
         User user = User.builder()
+                    .openId(openId)
                     .username(username)
                     .password(password)
                     .role(role)
@@ -101,9 +141,7 @@ public class UserServiceImpl extends PageableServiceImpl<UserMapper,User,UserPag
         //user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         // 保存到数据库
-        if(!this.save(user))
-            throw new SystemException(MessageConstant.SYSTEM_ERROR);
-
+        this.save(user);
         return user;
     }
 }
