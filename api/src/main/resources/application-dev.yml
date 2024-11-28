@@ -1,0 +1,15 @@
+forfries:
+  datasource:
+    host: localhost
+    port: 3306
+    database: movie-ticketing-db
+    username: root
+    password: 1234
+  wx:
+    appId: 此处填写appId
+    secret: 此处填写密钥
+    token: 此处填写token
+  redis:
+    host: localhost
+    port: 6379
+    database: 0

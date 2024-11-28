@@ -1,0 +1,49 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: movie-ticketing-system
+  datasource:
+    url: jdbc:mysql://${forfries.datasource.host}:${forfries.datasource.port}/${forfries.datasource.database}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+    username: ${forfries.datasource.username}
+    password: ${forfries.datasource.password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+  data:
+    redis:
+      host: ${forfries.redis.host}
+      port: ${forfries.redis.port}
+      database: ${forfries.redis.database}
+  cache:
+      type: redis   # 指定使用的缓存类型
+
+# MyBatis-Plus configuration
+mybatis-plus:
+  configuration:
+    # MySQL驼峰
+    map-underscore-to-camel-case: true
+#  global-config:
+#    db-config:
+#      id-type: auto
+
+forfries:
+  jwt:
+    # 设置jwt签名加密时使用的秘钥
+    admin-secret-key: com.forfries
+    # 设置jwt过期时间
+    admin-ttl: 7200000
+    # 设置前端传递过来的令牌名称
+    admin-token-name: Authorization
+    user-secret-key: com.forfries
+    user-ttl: 7200000
+    user-token-name: Authorization
+wx:
+  mp:
+    appId: ${forfries.wx.appId}
+    secret: ${forfries.wx.secret}
+    token: ${forfries.wx.token}
